@@ -1,0 +1,23 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Spring: Test with Doppler" type="JUnit" factoryName="JUnit">
+    <module name="nestrr-flock" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.nestrr.apps.flock.profile.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <option name="PACKAGE_NAME" value="com.nestrr.apps.flock.profile" />
+    <option name="MAIN_CLASS_NAME" value="" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="directory" />
+    <option name="VM_PARAMETERS" value="-ea -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" />
+    <envs>
+      <env name="TESTCONTAINERS_RYUK_DISABLED" value="true" />
+    </envs>
+    <dir value="$PROJECT_DIR$/src/test/java/com/nestrr/apps/flock" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
