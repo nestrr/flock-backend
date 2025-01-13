@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Spring: Test with Doppler" type="JUnit" factoryName="JUnit">
-    <module name="nestrr-flock" />
+    <module name="flock-backend" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="com.nestrr.apps.flock.profile.*" />
