@@ -1,4 +1,4 @@
-spring.application.name: nestrr-flock
+spring.application.name: flock-backend
 oidc:
   config:
     url: https://login.microsoftonline.com/${MICROSOFT_ENTRA_TENANT_ID}/v2.0/.well-known/openid-configuration
