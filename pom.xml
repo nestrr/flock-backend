@@ -134,10 +134,20 @@
         <plugins>
             <plugin>
                 <configuration>
-                    <image>
-                        <name>flock-backend</name>
-                    </image>
+                    <docker>
+                        <publishRegistry>
+                            <url>https://ghcr.io/nestrr/</url>
+                            <publish>true</publish>
+                        </publishRegistry>
+                    </docker>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-image-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
