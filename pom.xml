@@ -133,14 +133,6 @@
     <build>
         <plugins>
             <plugin>
-                <configuration>
-                    <docker>
-                        <publishRegistry>
-                            <url>https://ghcr.io/nestrr/</url>
-                            <publish>true</publish>
-                        </publishRegistry>
-                    </docker>
-                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -148,6 +140,16 @@
                         </goals>
                     </execution>
                 </executions>
+
+                <configuration>
+                    <docker>
+                        <publishRegistry>
+                            <url>${docker.publishRegistry.url}</url>
+                            <username>${docker.publishRegistry.username}</username>
+                            <password>${docker.publishRegistry.password}</password>
+                        </publishRegistry>
+                    </docker>
+                </configuration>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
