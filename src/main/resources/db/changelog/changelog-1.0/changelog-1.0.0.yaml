@@ -1,0 +1,441 @@
+databaseChangeLog:
+  - changeSet:
+      # Create standing table.
+      id: 202501011225
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            tableName: standing
+            columns:
+              - column:
+                  name: id
+                  type: text
+                  defaultValueComputed: gen_random_uuid()::text
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_standing
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+                  constraints:
+                    nullable: false
+  - changeSet:
+    # Create major table.
+    id: 202501011230
+    author: maryamkhan
+    runOnChange: true
+    changes:
+      - createTable:
+          # Create major table
+          tableName: major
+          columns:
+            - column:
+                name: id
+                type: text
+                defaultValueComputed: gen_random_uuid()::text
+                constraints:
+                  primaryKey: true
+                  primaryKeyName: pk_major
+                  nullable: false
+            - column:
+                name: version
+                type: int
+                constraints:
+                  nullable: false
+            - column:
+                name: name
+                type: text
+                constraints:
+                  nullable: false
+            - column:
+                name: description
+                type: text
+                constraints:
+                  nullable: false
+  - changeSet:
+      # Create person table.
+      id: 202501011240
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            tableName: person
+            columns:
+              - column:
+                  name: id
+                  type: text
+                  defaultValueComputed: gen_random_uuid()::text
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_person
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: text
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: image
+                  type: text
+              - column:
+                  name: bio
+                  type: text
+              - column:
+                  name: standing_id
+                  type: text
+                  constraints:
+                    foreignKeyName: person__fk_standing_id
+                    references: standing(id)
+                    onUpdate: CASCADE
+                    onDelete: SET NULL
+              - column:
+                  name: major_id
+                  type: text
+                  constraints:
+                    foreignKeyName: person__fk_major_id
+                    references: major(id)
+                    onUpdate: CASCADE
+                    onDelete: SET NULL
+              - column:
+                  name: last_login
+                  type: datetime
+  - changeSet:
+      # Create role table.
+      id: 202501011245
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  type: text
+                  defaultValueComputed: gen_random_uuid()::text
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_role
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: text
+                  constraints:
+                    nullable: false
+  - changeSet:
+      # Create role_assignment table.
+      id: 202501011250
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            tableName: role_assignment
+            columns:
+              - column:
+                  name: person_id
+                  type: text
+                  constraints:
+                    foreignKeyName: role_assignment__fk_person_id
+                    references: person(id)
+                    onUpdate: CASCADE
+                    onDelete: CASCADE
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: text
+                  constraints:
+                    foreignKeyName: role_assignment__fk_role_id
+                    references: role(id)
+                    onUpdate: CASCADE
+                    onDelete: CASCADE
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: role_assignment
+            clustered: true
+            columnNames: person_id, role_id
+            constraintName: pk_role_assignment
+  - changeSet:
+      # Create campus table.
+      id: 202501011300
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            tableName: campus
+            columns:
+              - column:
+                  name: id
+                  type: text
+                  defaultValueComputed: gen_random_uuid()::text
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_campus
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+                  constraints:
+                    nullable: false
+  - changeSet:
+      # Create campus_choice table.
+      id: 202501011305
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            tableName: campus_choice
+            columns:
+              - column:
+                  name: id
+                  type: text
+                  defaultValueComputed: gen_random_uuid()::text
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_campus_choice
+                    nullable: false
+              - column:
+                  name: person_id
+                  type: text
+                  constraints:
+                    foreignKeyName: campus_choice__fk_person_id
+                    references: person(id)
+                    onUpdate: CASCADE
+                    onDelete: CASCADE
+                    nullable: false
+              - column:
+                  name: campus_id
+                  type: text
+                  constraints:
+                    foreignKeyName: campus_choice__fk_campus_id
+                    references: campus(id)
+                    onUpdate: CASCADE
+                    onDelete: CASCADE
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            clustered: true
+            columnNames: person_id, campus_id
+            tableName: campus_choice
+            constraintName: campus_choice__unique_person_campus_combination
+
+
+  - changeSet:
+      # Create campus_choice_rank table.
+      id: 202501011310
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            tableName: campus_choice_rank
+            columns:
+              - column:
+                  name: person_id
+                  type: text
+                  constraints:
+                    foreignKeyName: campus_choice_rank__fk_person_id
+                    references: person(id)
+                    onUpdate: CASCADE
+                    onDelete: CASCADE
+                    nullable: false
+              - column:
+                  name: rank
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: choice_id
+                  type: text
+                  constraints:
+                    foreignKeyName: campus_choice_rank__fk_campus_choice_id
+                    references: campus(id)
+                    onUpdate: CASCADE
+                    onDelete: CASCADE
+                    nullable: false
+        - addPrimaryKey:
+            tableName: campus_choice_rank
+            clustered: true
+            columnNames: person_id, rank
+            constraintName: pk_campus_choice
+  - changeSet:
+      # Create flexibility table.
+      id: 202501011320
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            tableName: flexibility
+            columns:
+              - column:
+                  name: id
+                  type: text
+                  defaultValueComputed: gen_random_uuid()::text
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_flexibility
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: code
+                  type: int
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: text
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      # Create reliability table.
+      id: 202501011325
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            tableName: reliability
+            columns:
+              - column:
+                  name: id
+                  type: text
+                  defaultValueComputed: gen_random_uuid()::text
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_reliability
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: code
+                  type: int
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: description
+                  type: text
+                  constraints:
+                    nullable: false
+  - changeSet:
+      # Create timeslot table.
+      id: 202501011330
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            tableName: timeslot
+            columns:
+              - column:
+                  name: person_id
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: day
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_time
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_time
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: reliability
+                  type: int
+                  defaultValue: 0
+                  constraints:
+                    foreignKeyName: timeslot__fk_reliability_code
+                    references: reliability(code)
+                    onUpdate: CASCADE
+                    onDelete: CASCADE
+                    nullable: false
+              - column:
+                  name: flexibility
+                  type: int
+                  defaultValue: 0
+                  constraints:
+                    foreignKeyName: timeslot__fk_flexibility_code
+                    references: flexibility(code)
+                    onUpdate: CASCADE
+                    onDelete: CASCADE
+                    nullable: false
+        - addPrimaryKey:
+            tableName: timeslot
+            clustered: true
+            columnNames: person_id, day
+            constraintName: pk_timeslot
