@@ -1,17 +1,18 @@
 package com.nestrr.apps.flock.profile.repository;
 
 import com.nestrr.apps.flock.profile.entity.CampusChoice;
-import com.nestrr.apps.flock.profile.entity.CampusChoiceRank;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.ListPagingAndSortingRepository;
 
 public interface CampusChoiceRepository
-    extends ListPagingAndSortingRepository<CampusChoice, String> {
+    extends ListPagingAndSortingRepository<CampusChoice, String>,
+        CrudRepository<CampusChoice, String> {
 
-  Optional<List<CampusChoiceRank>> findByPersonId(String personId);
+  Optional<List<CampusChoice>> findByPersonId(String personId);
 
   @Modifying
   @Query(

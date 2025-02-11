@@ -5,9 +5,12 @@ import com.nestrr.apps.flock.profile.entity.id.TimeslotId;
 import java.time.LocalTime;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.ListPagingAndSortingRepository;
 
-public interface TimeslotRepository extends ListPagingAndSortingRepository<Timeslot, TimeslotId> {
+public interface TimeslotRepository
+    extends ListPagingAndSortingRepository<Timeslot, TimeslotId>,
+        CrudRepository<Timeslot, TimeslotId> {
   Optional<Timeslot> findByDay(Integer day);
 
   Optional<Timeslot> findByPersonId(String personId);
