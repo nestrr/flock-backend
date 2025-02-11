@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      # Seed the database role table.
+      id: 202501021340
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - sql:
+            sql: INSERT INTO role (version, name, description) VALUES (0, 'student', 'A university student.');
+  - changeSet:
+      # Seed the database campus table.
+      id: 202501021345
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - sql:
+            sql: INSERT INTO campus (version, name, description) VALUES (0, 'Klamath Falls', 'Oregon Tech''s residential campus in Klamath Falls, Oregon.');
+        - sql:
+            sql: INSERT INTO campus (version, name, description) VALUES (0, 'Portland-Metro', 'Oregon Tech''s Portland-Metro Polytechnic Campus in Wilsonville.');
+  - changeSet:
+      # Seed the reliability table.
+      id: 202501021350
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - sql:
+            sql: INSERT INTO reliability (version, code, description) VALUES (0, 0, 'This time only sometimes works for me.');
+        - sql:
+            sql: INSERT INTO reliability (version, code, description) VALUES (0, 1, 'This time mostly works for me.');
+        - sql:
+            sql: INSERT INTO reliability (version, code, description) VALUES (0, 2, 'This time always works for me.');
+
+  - changeSet:
+      # Seed the flexibility table.
+      id: 202501021355
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - sql:
+            sql: INSERT INTO flexibility (version, code, description) VALUES (0, 0, 'I can only do this exact time.');
+        - sql:
+            sql: INSERT INTO flexibility (version, code, description) VALUES (0, 1, 'I have some wiggle room.');
+        - sql:
+            sql: INSERT INTO flexibility (version, code, description) VALUES (0, 2, 'I can move this around easily.');
+
+
+
+
+
+
