@@ -7,18 +7,19 @@ import lombok.*;
 
 @Entity
 @IdClass(TimeslotId.class)
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Timeslot {
-  @Getter @Id private String personId;
-  @Getter @Id private Integer day;
+  @Id private String personId;
+  @Id private Integer day;
 
-  @Getter @Version private Integer version;
+  @Version private Integer version;
 
-  @Getter private LocalTime startTime;
-  @Getter private LocalTime endTime;
-  @Getter private String reliability;
+  private LocalTime startTime;
+  private LocalTime endTime;
+  private String reliability;
 
-  @Getter private String flexibility;
+  private String flexibility;
 }

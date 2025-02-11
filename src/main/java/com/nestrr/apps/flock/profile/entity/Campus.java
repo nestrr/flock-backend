@@ -4,15 +4,16 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Campus {
-  @Getter @Id private String id;
+  @Id private String id;
 
-  @Getter @Version private int version;
+  @Version private int version;
 
-  @Getter private String name;
+  private String name;
 
-  @Getter private String description;
+  private String description;
 }

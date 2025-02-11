@@ -4,15 +4,16 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Flexibility {
-  @Getter @Id private String id;
+  @Id private String id;
 
-  @Getter @Version private Integer version;
+  @Version private Integer version;
 
-  @Getter private Integer code;
+  private Integer code;
 
-  @Getter private String description;
+  private String description;
 }

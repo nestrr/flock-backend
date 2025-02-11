@@ -9,15 +9,17 @@ import lombok.*;
 
 @Entity
 @IdClass(CampusChoiceRankId.class)
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class CampusChoiceRank {
-  @Getter @Setter @Id private String personId;
+  @Id @NonNull private String personId;
 
-  @Getter @Setter @Id private Integer rank;
+  @Id @NonNull private Integer rank;
 
-  @Getter @Setter @Version private Integer version;
+  @Version private Integer version;
 
-  @Getter @Setter private String choiceId;
+  @NonNull private String choiceId;
 }
