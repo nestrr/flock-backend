@@ -32,38 +32,38 @@ databaseChangeLog:
                   constraints:
                     nullable: false
   - changeSet:
-    # Create major table.
-    id: 202501011230
-    author: maryamkhan
-    runOnChange: true
-    changes:
-      - createTable:
-          # Create major table
-          tableName: major
-          columns:
-            - column:
-                name: id
-                type: text
-                defaultValueComputed: gen_random_uuid()::text
-                constraints:
-                  primaryKey: true
-                  primaryKeyName: pk_major
-                  nullable: false
-            - column:
-                name: version
-                type: int
-                constraints:
-                  nullable: false
-            - column:
-                name: name
-                type: text
-                constraints:
-                  nullable: false
-            - column:
-                name: description
-                type: text
-                constraints:
-                  nullable: false
+      # Create major table.
+      id: 202501011230
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            # Create major table
+            tableName: major
+            columns:
+              - column:
+                  name: id
+                  type: text
+                  defaultValueComputed: gen_random_uuid()::text
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_major
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+                  constraints:
+                    nullable: false
   - changeSet:
       # Create person table.
       id: 202501011240
@@ -189,7 +189,6 @@ databaseChangeLog:
                     nullable: false
         - addPrimaryKey:
             tableName: role_assignment
-            clustered: true
             columnNames: person_id, role_id
             constraintName: pk_role_assignment
   - changeSet:
@@ -265,7 +264,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
         - addUniqueConstraint:
-            clustered: true
             columnNames: person_id, campus_id
             tableName: campus_choice
             constraintName: campus_choice__unique_person_campus_combination
@@ -310,9 +308,8 @@ databaseChangeLog:
                     nullable: false
         - addPrimaryKey:
             tableName: campus_choice_rank
-            clustered: true
             columnNames: person_id, rank
-            constraintName: pk_campus_choice
+            constraintName: pk_campus_choice_rank
   - changeSet:
       # Create flexibility table.
       id: 202501011320
@@ -436,6 +433,5 @@ databaseChangeLog:
                     nullable: false
         - addPrimaryKey:
             tableName: timeslot
-            clustered: true
             columnNames: person_id, day
             constraintName: pk_timeslot
