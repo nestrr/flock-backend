@@ -17,15 +17,10 @@ public class ProfileController {
     this.profileFacadeService = profileFacadeService;
   }
 
-  @GetMapping("/health")
-  public ResponseEntity<String> healthCheck(Authentication a) {
-    return ResponseEntity.ok("healthy.");
-  }
-
   @PostMapping("/me")
   public ResponseEntity<ProfileDto> getOrCreateProfile(
-      Authentication a, @RequestBody @Valid OidcProfileRequest oidcProfileRequest) {
-    ProfileDto profileDto = profileFacadeService.getOrCreateProfile(a, oidcProfileRequest);
+      Authentication auth, @RequestBody @Valid OidcProfileRequest oidcProfileRequest) {
+    ProfileDto profileDto = profileFacadeService.getOrCreateProfile(auth, oidcProfileRequest);
     return ResponseEntity.ok(profileDto);
   }
 }
