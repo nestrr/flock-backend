@@ -10,3 +10,6 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
+otel:
+  sdk:
+    disabled: true
