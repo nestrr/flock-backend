@@ -2,7 +2,8 @@ name: Publish Docker images
 on:
   push:
     branches:
-      - main, develop
+      - main
+      - develop
 
 permissions:
   packages: write
