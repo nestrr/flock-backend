@@ -1,0 +1,12 @@
+oidc:
+  login:
+    url: https://nestrr.wiremockapi.cloud/login
+  authorization:
+    url: https://nestrr.wiremockapi.cloud/oauth/authorize
+  token:
+    url: https://nestrr.wiremockapi.cloud/oauth/token
+  jwk:
+    url: https://nestrr.wiremockapi.cloud/.well-known/jwks.json
+otel:
+  sdk:
+    disabled: true
