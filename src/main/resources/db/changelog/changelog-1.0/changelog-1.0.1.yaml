@@ -22,7 +22,7 @@ databaseChangeLog:
             encoding: UTF-8
             file: ../seed/roles.csv
             relativeToChangelogFile: true
-            tableName: program
+            tableName: role
             quotchar: '"'
             usePreparedStatements: true
   - changeSet:
@@ -48,7 +48,7 @@ databaseChangeLog:
             encoding: UTF-8
             file: ../seed/campuses.csv
             relativeToChangelogFile: true
-            tableName: program
+            tableName: campus
             quotchar: '"'
             usePreparedStatements: true
   - changeSet:
@@ -74,7 +74,7 @@ databaseChangeLog:
             encoding: UTF-8
             file: ../seed/reliability.csv
             relativeToChangelogFile: true
-            tableName: program
+            tableName: reliability
             quotchar: '"'
             usePreparedStatements: true
 
@@ -101,7 +101,7 @@ databaseChangeLog:
             encoding: UTF-8
             file: ../seed/flexibility.csv
             relativeToChangelogFile: true
-            tableName: program
+            tableName: flexibility
             quotchar: '"'
             usePreparedStatements: true
   - changeSet:
@@ -127,7 +127,7 @@ databaseChangeLog:
             encoding: UTF-8
             file: ../seed/standings.csv
             relativeToChangelogFile: true
-            tableName: program
+            tableName: standing
             quotchar: '"'
             usePreparedStatements: true
   - changeSet:
