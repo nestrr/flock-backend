@@ -5,43 +5,208 @@ databaseChangeLog:
       author: maryamkhan
       runOnChange: true
       changes:
-        - sql:
-            sql: INSERT INTO role (version, name, description) VALUES (0, 'student', 'A university student.');
+        - loadData:
+            columns:
+              - column:
+                  index: 0
+                  name: version
+                  type: numeric
+              - column:
+                  index: 1
+                  name: name
+                  type: string
+              - column:
+                  index: 2
+                  name: description
+                  type: string
+            encoding: UTF-8
+            file: ../seed/roles.csv
+            relativeToChangelogFile: true
+            tableName: role
+            quotchar: '"'
+            usePreparedStatements: true
   - changeSet:
       # Seed the database campus table.
       id: 202501021345
       author: maryamkhan
       runOnChange: true
       changes:
-        - sql:
-            sql: INSERT INTO campus (version, name, description) VALUES (0, 'Klamath Falls', 'Oregon Tech''s residential campus in Klamath Falls, Oregon.');
-        - sql:
-            sql: INSERT INTO campus (version, name, description) VALUES (0, 'Portland-Metro', 'Oregon Tech''s Portland-Metro Polytechnic Campus in Wilsonville.');
+        - loadData:
+            columns:
+              - column:
+                  index: 0
+                  name: version
+                  type: numeric
+              - column:
+                  index: 1
+                  name: name
+                  type: string
+              - column:
+                  index: 2
+                  name: description
+                  type: string
+            encoding: UTF-8
+            file: ../seed/campuses.csv
+            relativeToChangelogFile: true
+            tableName: campus
+            quotchar: '"'
+            usePreparedStatements: true
   - changeSet:
       # Seed the reliability table.
       id: 202501021350
       author: maryamkhan
       runOnChange: true
       changes:
-        - sql:
-            sql: INSERT INTO reliability (version, code, description) VALUES (0, 0, 'This time only sometimes works for me.');
-        - sql:
-            sql: INSERT INTO reliability (version, code, description) VALUES (0, 1, 'This time mostly works for me.');
-        - sql:
-            sql: INSERT INTO reliability (version, code, description) VALUES (0, 2, 'This time always works for me.');
+        - loadData:
+            columns:
+              - column:
+                  index: 0
+                  name: version
+                  type: numeric
+              - column:
+                  index: 1
+                  name: code
+                  type: numeric
+              - column:
+                  index: 2
+                  name: description
+                  type: string
+            encoding: UTF-8
+            file: ../seed/reliability.csv
+            relativeToChangelogFile: true
+            tableName: reliability
+            quotchar: '"'
+            usePreparedStatements: true
 
   - changeSet:
       # Seed the flexibility table.
-      id: 202501021355
+      id: 202502121540
       author: maryamkhan
       runOnChange: true
       changes:
-        - sql:
-            sql: INSERT INTO flexibility (version, code, description) VALUES (0, 0, 'I can only do this exact time.');
-        - sql:
-            sql: INSERT INTO flexibility (version, code, description) VALUES (0, 1, 'I have some wiggle room.');
-        - sql:
-            sql: INSERT INTO flexibility (version, code, description) VALUES (0, 2, 'I can move this around easily.');
+        - loadData:
+            columns:
+              - column:
+                  index: 0
+                  name: version
+                  type: numeric
+              - column:
+                  index: 1
+                  name: code
+                  type: numeric
+              - column:
+                  index: 2
+                  name: description
+                  type: string
+            encoding: UTF-8
+            file: ../seed/flexibility.csv
+            relativeToChangelogFile: true
+            tableName: flexibility
+            quotchar: '"'
+            usePreparedStatements: true
+  - changeSet:
+      # Seed the standing table.
+      id: 202502121545
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  index: 0
+                  name: version
+                  type: numeric
+              - column:
+                  index: 1
+                  name: name
+                  type: string
+              - column:
+                  index: 2
+                  name: description
+                  type: string
+            encoding: UTF-8
+            file: ../seed/standings.csv
+            relativeToChangelogFile: true
+            tableName: standing
+            quotchar: '"'
+            usePreparedStatements: true
+  - changeSet:
+      # Seed the program table.
+      id: 202502121550
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  index: 0
+                  name: version
+                  type: numeric
+              - column:
+                  index: 1
+                  name: code
+                  type: string
+              - column:
+                  index: 2
+                  name: name
+                  type: string
+            encoding: UTF-8
+            file: ../seed/programs.csv
+            relativeToChangelogFile: true
+            tableName: program
+            quotchar: '"'
+            usePreparedStatements: true
+  - changeSet:
+      # Seed the degree_type table.
+      id: 202502121555
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  index: 0
+                  name: version
+                  type: numeric
+              - column:
+                  index: 1
+                  name: code
+                  type: string
+              - column:
+                  index: 2
+                  name: name
+                  type: string
+            encoding: UTF-8
+            file: ../seed/degree_types.csv
+            relativeToChangelogFile: true
+            tableName: degree_type
+            usePreparedStatements: true
+  - changeSet:
+      # Seed the degree table.
+      id: 202502121600
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  index: 0
+                  name: version
+                  type: numeric
+              - column:
+                  index: 1
+                  name: program_code
+                  type: string
+              - column:
+                  index: 2
+                  name: degree_type_code
+                  type: string
+            encoding: UTF-8
+            file: ../seed/degrees.csv
+            relativeToChangelogFile: true
+            tableName: degree
+            usePreparedStatements: true
+
 
 
 
