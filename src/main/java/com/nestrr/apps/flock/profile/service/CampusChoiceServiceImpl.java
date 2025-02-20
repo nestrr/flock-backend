@@ -1,15 +1,17 @@
 package com.nestrr.apps.flock.profile.service;
 
-import com.nestrr.apps.flock.profile.dto.CampusDto;
-import com.nestrr.apps.flock.profile.entity.Campus;
+import com.nestrr.apps.flock.campus.dto.CampusDto;
+import com.nestrr.apps.flock.campus.entity.Campus;
+import com.nestrr.apps.flock.campus.mapper.CampusMapper;
 import com.nestrr.apps.flock.profile.entity.CampusChoice;
 import com.nestrr.apps.flock.profile.entity.CampusChoiceRank;
-import com.nestrr.apps.flock.profile.mapper.CampusMapper;
 import com.nestrr.apps.flock.profile.repository.CampusChoiceRankRepository;
 import com.nestrr.apps.flock.profile.repository.CampusChoiceRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,27 +40,16 @@ public class CampusChoiceServiceImpl implements CampusChoiceService {
   }
 
   @Override
-  public void updateCampusChoices(String personId, List<String> newChoices) {
-    List<CampusChoice> oldCampusChoices =
-        campusChoiceRepository.findByPersonId(personId).orElseGet(ArrayList::new);
-    int choiceIdx = 0;
-    for (String campusId : newChoices) {
-      CampusChoice saved = campusChoiceRepository.save(new CampusChoice(personId, campusId));
-      campusChoiceRankRepository.save(new CampusChoiceRank(personId, choiceIdx++, saved.getId()));
-    }
-
-    if (!oldCampusChoices.isEmpty()) {
-      List<String> oldChosenCampusIds =
-          oldCampusChoices.stream()
-              .map(CampusChoice::getId)
-              .filter(id -> !newChoices.contains(id))
-              .toList();
-      deleteCampusChoices(personId, oldChosenCampusIds);
-    }
-  }
-
-  public void deleteCampusChoices(String personId, List<String> toDelete) {
-    toDelete.forEach(
+  public void updateCampusChoices(
+      String personId, List<String> newChoices, List<String> deletedChoices) {
+    deletedChoices.forEach(
         campusId -> campusChoiceRepository.deleteByPersonIdAndCampusId(personId, campusId));
+    AtomicInteger rankNumber = new AtomicInteger();
+    newChoices.forEach(
+        campusId -> {
+          CampusChoice saved = campusChoiceRepository.save(new CampusChoice(personId, campusId));
+          campusChoiceRankRepository.save(
+              new CampusChoiceRank(personId, rankNumber.getAndIncrement(), saved.getId()));
+        });
   }
 }

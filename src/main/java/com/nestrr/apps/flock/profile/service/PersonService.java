@@ -1,14 +1,14 @@
 package com.nestrr.apps.flock.profile.service;
 
 import com.nestrr.apps.flock.profile.entity.Person;
-
 import java.sql.SQLDataException;
-import java.util.List;
 
 public interface PersonService {
-  Person getOrCreatePerson(String id, String email, String name, String image, List<String> roles);
+  void createPersonIfNeeded(String id, String email, String name, String image);
 
-  void updatePerson(String id, String name, String profilePicture, String bio);
+  Person getPerson(String id) throws SQLDataException;
+
+  void updatePerson(Person person);
 
   void deletePerson(String id);
 }
