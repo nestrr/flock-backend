@@ -32,14 +32,14 @@ databaseChangeLog:
                   constraints:
                     nullable: false
   - changeSet:
-      # Create major table.
-      id: 202501011230
+      # Create program table.
+      id: 202501011228
       author: maryamkhan
       runOnChange: true
       changes:
         - createTable:
-            # Create major table
-            tableName: major
+            # Create program table
+            tableName: program
             columns:
               - column:
                   name: id
@@ -47,7 +47,7 @@ databaseChangeLog:
                   defaultValueComputed: gen_random_uuid()::text
                   constraints:
                     primaryKey: true
-                    primaryKeyName: pk_major
+                    primaryKeyName: pk_program
                     nullable: false
               - column:
                   name: version
@@ -55,15 +55,93 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: code
+                  type: text
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
                   name: name
                   type: text
                   constraints:
                     nullable: false
+  - changeSet:
+      # Create degree_type table.
+      id: 202501011229
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            # Create degree_type table
+            tableName: degree_type
+            columns:
               - column:
-                  name: description
+                  name: id
+                  type: text
+                  defaultValueComputed: gen_random_uuid()::text
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_degree_type
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: code
                   type: text
                   constraints:
                     nullable: false
+                    unique: true
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+  - changeSet:
+      # Create degree table.
+      id: 202501011230
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            # Create degree table
+            tableName: degree
+            columns:
+              - column:
+                  name: id
+                  type: text
+                  defaultValueComputed: gen_random_uuid()::text
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_degree
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: program_code
+                  type: text
+                  constraints:
+                    foreignKeyName: degree__fk_program_code
+                    references: program(code)
+                    onUpdate: CASCADE
+                    onDelete: SET NULL
+              - column:
+                  name: degree_type_code
+                  type: text
+                  constraints:
+                    foreignKeyName: degree__fk_degree_type
+                    references: degree_type(code)
+                    onUpdate: CASCADE
+                    onDelete: SET NULL
+        - addUniqueConstraint:
+            columnNames: degree_type_code, program_code
+            tableName: degree
+            constraintName: degree__unique_type_program_combination
   - changeSet:
       # Create person table.
       id: 202501011240
@@ -112,11 +190,11 @@ databaseChangeLog:
                     onUpdate: CASCADE
                     onDelete: SET NULL
               - column:
-                  name: major_id
+                  name: degree_id
                   type: text
                   constraints:
-                    foreignKeyName: person__fk_major_id
-                    references: major(id)
+                    foreignKeyName: person__fk_degree_id
+                    references: degree(id)
                     onUpdate: CASCADE
                     onDelete: SET NULL
               - column:
