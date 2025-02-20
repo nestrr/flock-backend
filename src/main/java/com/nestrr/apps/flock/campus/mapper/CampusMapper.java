@@ -1,7 +1,7 @@
-package com.nestrr.apps.flock.profile.mapper;
+package com.nestrr.apps.flock.campus.mapper;
 
-import com.nestrr.apps.flock.profile.dto.CampusDto;
-import com.nestrr.apps.flock.profile.entity.Campus;
+import com.nestrr.apps.flock.campus.dto.CampusDto;
+import com.nestrr.apps.flock.campus.entity.Campus;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.stereotype.Component;

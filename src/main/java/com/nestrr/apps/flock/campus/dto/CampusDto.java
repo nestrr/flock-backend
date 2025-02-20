@@ -1,4 +1,4 @@
-package com.nestrr.apps.flock.profile.dto;
+package com.nestrr.apps.flock.campus.dto;
 
 import lombok.Builder;
 import lombok.Data;
