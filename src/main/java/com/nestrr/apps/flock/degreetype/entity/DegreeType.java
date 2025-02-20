@@ -1,4 +1,4 @@
-package com.nestrr.apps.flock.profile.entity;
+package com.nestrr.apps.flock.degreetype.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,12 +8,11 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Major {
+public class DegreeType {
   @Id private String id;
 
   @Version private Integer version;
 
+  private String code;
   private String name;
-
-  private String description;
 }
