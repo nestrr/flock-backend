@@ -1,4 +1,4 @@
-package com.nestrr.apps.flock.profile.entity;
+package com.nestrr.apps.flock.campus.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,10 +8,10 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Standing {
+public class Campus {
   @Id private String id;
 
-  @Version private Integer version;
+  @Version private int version;
 
   private String name;
 
