@@ -106,7 +106,7 @@ databaseChangeLog:
             usePreparedStatements: true
   - changeSet:
       # Seed the standing table.
-      id: 202502121540
+      id: 202502121545
       author: maryamkhan
       runOnChange: true
       changes:
@@ -132,7 +132,7 @@ databaseChangeLog:
             usePreparedStatements: true
   - changeSet:
       # Seed the program table.
-      id: 202502121545
+      id: 202502121550
       author: maryamkhan
       runOnChange: true
       changes:
@@ -158,7 +158,7 @@ databaseChangeLog:
             usePreparedStatements: true
   - changeSet:
       # Seed the degree_type table.
-      id: 202502121550
+      id: 202502121555
       author: maryamkhan
       runOnChange: true
       changes:
@@ -183,7 +183,7 @@ databaseChangeLog:
             usePreparedStatements: true
   - changeSet:
       # Seed the degree table.
-      id: 202502121555
+      id: 202502121600
       author: maryamkhan
       runOnChange: true
       changes:
