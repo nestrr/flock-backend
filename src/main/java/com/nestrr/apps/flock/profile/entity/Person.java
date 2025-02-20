@@ -1,10 +1,8 @@
 package com.nestrr.apps.flock.profile.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.time.LocalDateTime;
-import java.util.UUID;
+import lombok.*;
 
 @Entity
 @Data
@@ -19,6 +17,6 @@ public class Person {
   private String image;
   private String bio;
   private String standingId;
-  private String majorId;
+  private String degreeId;
   private LocalDateTime lastLogin;
 }
