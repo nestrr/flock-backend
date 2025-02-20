@@ -14,5 +14,5 @@ public interface RoleAssignmentRepository
       nativeQuery = true,
       value =
           "SELECT r.name FROM role_assignment ra JOIN role r ON ra.role_id=r.id WHERE ra.person_id=?")
-  Optional<List<String>> listRolesByPersonId(String subId);
+  Optional<List<String>> listRolesByPersonId(String personId);
 }

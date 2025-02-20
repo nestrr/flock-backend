@@ -19,7 +19,7 @@ public class Timeslot {
 
   private LocalTime startTime;
   private LocalTime endTime;
-  private String reliability;
+  private Integer reliability;
 
-  private String flexibility;
+  private Integer flexibility;
 }

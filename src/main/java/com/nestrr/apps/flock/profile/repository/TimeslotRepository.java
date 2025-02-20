@@ -3,17 +3,19 @@ package com.nestrr.apps.flock.profile.repository;
 import com.nestrr.apps.flock.profile.entity.Timeslot;
 import com.nestrr.apps.flock.profile.entity.id.TimeslotId;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.ListPagingAndSortingRepository;
 
 public interface TimeslotRepository
     extends ListPagingAndSortingRepository<Timeslot, TimeslotId>,
-        CrudRepository<Timeslot, TimeslotId> {
+        ListCrudRepository<Timeslot, TimeslotId> {
   Optional<Timeslot> findByDay(Integer day);
 
-  Optional<Timeslot> findByPersonId(String personId);
+  @Query(nativeQuery = true, value = "SELECT * FROM timeslot WHERE person_id=?1")
+  Optional<List<Timeslot>> findByPersonId(String personId);
 
   /** Any time after this start time <b>exclusive</b>. */
   @Query(nativeQuery = true, value = "SELECT * FROM timeslot WHERE start_time>=?1")

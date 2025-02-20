@@ -1,6 +1,6 @@
 package com.nestrr.apps.flock.profile.repository;
 
-import com.nestrr.apps.flock.profile.entity.Campus;
+import com.nestrr.apps.flock.campus.entity.Campus;
 import com.nestrr.apps.flock.profile.entity.CampusChoiceRank;
 import com.nestrr.apps.flock.profile.entity.id.CampusChoiceRankId;
 import java.util.List;

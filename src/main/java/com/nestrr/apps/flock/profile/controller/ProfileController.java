@@ -18,9 +18,15 @@ public class ProfileController {
   }
 
   @PostMapping("/me")
-  public ResponseEntity<ProfileDto> getOrCreateProfile(
+  public ResponseEntity<String> storeNewProfile(
       Authentication auth, @RequestBody @Valid OidcProfileRequest oidcProfileRequest) {
-    ProfileDto profileDto = profileFacadeService.getOrCreateProfile(auth, oidcProfileRequest);
-    return ResponseEntity.ok(profileDto);
+    profileFacadeService.storeNewProfile(auth, oidcProfileRequest);
+    return ResponseEntity.noContent().build();
+  }
+
+  @GetMapping("/me")
+  public ResponseEntity<ProfileDto> getProfile(Authentication auth) {
+    ProfileDto profileDto = profileFacadeService.getProfile(auth);
+    return profileDto != null ? ResponseEntity.ok(profileDto) : ResponseEntity.notFound().build();
   }
 }
