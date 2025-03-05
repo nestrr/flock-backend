@@ -23,37 +23,26 @@ public interface ProfileMapper {
   default ProfileDto toProfileDto(Profile profile) {
 
     List<TimeslotDto> timeslots = profile.getTimeslots();
+    ProfileDto.ProfileDtoBuilder base =
+        ProfileDto.builder()
+            .name(profile.getName())
+            .email(profile.getEmail())
+            .image(profile.getImage())
+            .bio(profile.getBio())
+            .standing(profile.getStanding())
+            .degree(profile.getDegree())
+            .roles(profile.getRoles())
+            .campusChoices(profile.getCampusChoices())
+            .newAccount(profile.getLastLogin() == null);
     if (timeslots != null) {
       Map<String, List<TimeslotDto>> timeslotsMap = new HashMap<>();
-      for (int i = 0; i < timeslots.size(); i++) {
-        TimeslotDto timeslot = timeslots.get(i);
+      for (TimeslotDto timeslot : timeslots) {
         timeslotsMap
             .computeIfAbsent(ProfileMapperConstants.DAYS[timeslot.day()], k -> new ArrayList<>())
             .add(timeslot);
       }
-      return ProfileDto.builder()
-          .name(profile.getName())
-          .email(profile.getEmail())
-          .image(profile.getImage())
-          .bio(profile.getBio())
-          .standing(profile.getStanding())
-          .degree(profile.getDegree())
-          .roles(profile.getRoles())
-          .timeslots(timeslotsMap)
-          .campusChoices(profile.getCampusChoices())
-          //        .firstLogin(profile.getLastLogin() == null)
-          .build();
+      return base.timeslots(timeslotsMap).build();
     }
-    return ProfileDto.builder()
-        .name(profile.getName())
-        .email(profile.getEmail())
-        .image(profile.getImage())
-        .bio(profile.getBio())
-        .standing(profile.getStanding())
-        .degree(profile.getDegree())
-        .roles(profile.getRoles())
-        .campusChoices(profile.getCampusChoices())
-        //        .firstLogin(profile.getLastLogin() == null)
-        .build();
+    return base.build();
   }
 }

@@ -58,7 +58,7 @@ class ProfileControllerTest extends AbstractIntegrationTest {
             .image(oidcProfileRequest.getImage())
             .bio(null)
             .timeslots(null)
-            .firstLogin(null)
+            .newAccount(true)
             .roles(List.of("student"))
             .campusChoices(null)
             .build();

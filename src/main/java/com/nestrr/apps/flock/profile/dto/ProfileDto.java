@@ -8,13 +8,13 @@ import lombok.Data;
 @Builder
 @Data
 public class ProfileDto {
+  private Boolean newAccount;
   private String name;
   private String email;
   private String image;
   private String bio;
   private StandingDto standing;
   private DegreeDto degree;
-  private Boolean firstLogin;
   private List<String> roles;
   private List<CampusDto> campusChoices;
   private Map<String, List<TimeslotDto>> timeslots;

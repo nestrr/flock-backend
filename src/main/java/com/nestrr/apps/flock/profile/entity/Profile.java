@@ -8,6 +8,7 @@ import com.nestrr.apps.flock.profile.entity.converter.CampusDtoAttributeConverte
 import com.nestrr.apps.flock.profile.entity.converter.DegreeDtoAttributeConverter;
 import com.nestrr.apps.flock.profile.entity.converter.TimeslotDtoAttributeConverter;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.*;
 import org.hibernate.annotations.Immutable;
@@ -33,6 +34,9 @@ public class Profile {
 
   @Column(insertable = false, updatable = false)
   private String image;
+
+  @Column(insertable = false, updatable = false)
+  private LocalDateTime lastLogin;
 
   @Column(insertable = false, updatable = false)
   private String bio;
