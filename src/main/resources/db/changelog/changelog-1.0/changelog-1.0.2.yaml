@@ -71,6 +71,7 @@ databaseChangeLog:
                       p.email, 
                       p.bio, 
                       p.image, 
+                      p.last_login,
                       d.degree,
                       r.roles, 
                       s.standing,
