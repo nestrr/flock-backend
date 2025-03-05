@@ -8,13 +8,14 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class CampusChoice {
-  @Id private String id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private String id;
 
   @Version private int version;
 
-  @NonNull private String personId;
+  private String personId;
 
-  @NonNull private String campusId;
+  private String campusId;
 }
