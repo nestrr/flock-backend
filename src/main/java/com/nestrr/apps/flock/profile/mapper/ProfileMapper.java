@@ -1,10 +1,8 @@
 package com.nestrr.apps.flock.profile.mapper;
 
-import com.nestrr.apps.flock.campus.dto.CampusDto;
 import com.nestrr.apps.flock.profile.dto.*;
-import com.nestrr.apps.flock.profile.entity.Person;
+import com.nestrr.apps.flock.profile.entity.Profile;
 import com.nestrr.apps.flock.profile.mapper.constants.ProfileMapperConstants;
-import com.nestrr.apps.flock.standing.dto.StandingDto;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,53 +15,45 @@ import org.springframework.stereotype.Component;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface ProfileMapper {
   /**
-   * Maps Person entity to ProfileDtoBuilder, <b>excluding</b> profile standing and major.
-   *
-   * @param person - The Person entity
-   * @return ProfileDtoBuilder Builder instance with base details filled
-   */
-  default ProfileDto.ProfileDtoBuilder personToBaseProfileDtoBuilder(Person person) {
-    return ProfileDto.builder()
-        .name(person.getName())
-        .email(person.getEmail())
-        .image(person.getImage())
-        .bio(person.getBio())
-        .firstLogin(person.getLastLogin() == null);
-  }
-
-  /**
    * Maps Person entity to ProfileDto.
    *
-   * @param person - The Person entity
-   * @param degree - The degree details
-   * @param standing - The year name (e.g. freshman)
-   * @return ProfileDto complete ProfileDto
+   * @param profile The Profile entity
+   * @return complete ProfileDto
    */
-  default ProfileDto toProfileDto(
-      Person person,
-      List<String> roles,
-      StandingDto standing,
-      DegreeDto degree,
-      List<TimeslotDto> preferredTimesList,
-      List<CampusDto> campusChoices) {
-    Map<String, List<TimeslotDto>> preferredTimesMap = new HashMap<>();
-    for (int i = 0; i < preferredTimesList.size(); i++) {
-      TimeslotDto timeslot = preferredTimesList.get(i);
-      preferredTimesMap
-          .computeIfAbsent(ProfileMapperConstants.DAYS[i], k -> new ArrayList<>())
-          .add(timeslot);
+  default ProfileDto toProfileDto(Profile profile) {
+
+    List<TimeslotDto> timeslots = profile.getTimeslots();
+    if (timeslots != null) {
+      Map<String, List<TimeslotDto>> timeslotsMap = new HashMap<>();
+      for (int i = 0; i < timeslots.size(); i++) {
+        TimeslotDto timeslot = timeslots.get(i);
+        timeslotsMap
+            .computeIfAbsent(ProfileMapperConstants.DAYS[timeslot.day()], k -> new ArrayList<>())
+            .add(timeslot);
+      }
+      return ProfileDto.builder()
+          .name(profile.getName())
+          .email(profile.getEmail())
+          .image(profile.getImage())
+          .bio(profile.getBio())
+          .standing(profile.getStanding())
+          .degree(profile.getDegree())
+          .roles(profile.getRoles())
+          .timeslots(timeslotsMap)
+          .campusChoices(profile.getCampusChoices())
+          //        .firstLogin(profile.getLastLogin() == null)
+          .build();
     }
     return ProfileDto.builder()
-        .name(person.getName())
-        .email(person.getEmail())
-        .image(person.getImage())
-        .bio(person.getBio())
-        .standing(standing)
-        .degree(degree)
-        .roles(roles)
-        .preferredTimes(preferredTimesMap)
-        .campusChoices(campusChoices)
-        .firstLogin(person.getLastLogin() == null)
+        .name(profile.getName())
+        .email(profile.getEmail())
+        .image(profile.getImage())
+        .bio(profile.getBio())
+        .standing(profile.getStanding())
+        .degree(profile.getDegree())
+        .roles(profile.getRoles())
+        .campusChoices(profile.getCampusChoices())
+        //        .firstLogin(profile.getLastLogin() == null)
         .build();
   }
 }

@@ -12,10 +12,9 @@ import org.springframework.data.repository.ListPagingAndSortingRepository;
 public interface TimeslotRepository
     extends ListPagingAndSortingRepository<Timeslot, TimeslotId>,
         ListCrudRepository<Timeslot, TimeslotId> {
-  Optional<Timeslot> findByDay(Integer day);
+  Optional<Timeslot> findByIdDay(Integer day);
 
-  @Query(nativeQuery = true, value = "SELECT * FROM timeslot WHERE person_id=?1")
-  Optional<List<Timeslot>> findByPersonId(String personId);
+  Optional<List<Timeslot>> findByIdPersonId(String personId);
 
   /** Any time after this start time <b>exclusive</b>. */
   @Query(nativeQuery = true, value = "SELECT * FROM timeslot WHERE start_time>=?1")

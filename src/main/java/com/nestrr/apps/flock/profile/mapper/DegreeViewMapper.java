@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
-public interface DegreeMapper {
+public interface DegreeViewMapper {
   DegreeDto toDegreeDto(DegreeView degree);
 
   DegreeView viewFromDegreeDto(DegreeDto degreeDto);
