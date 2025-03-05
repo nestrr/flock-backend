@@ -8,8 +8,8 @@ See Confluence for the reasoning behind these choices.
 
 * Spring Boot 3.3.6
 * Java 21
-* PostgreSQL
-    * Flock uses [Supabase](https://supabase.com/)'s managed Postgres database service, as that saves time setting up
+* Postgres v17
+    * Flock uses [Neon](https://neon.tech)'s managed Postgres database service, as that saves time setting up
       and managing a self-hosted database.
 * Docker with GitHub Container Registry
     * See tagging information under next section.
