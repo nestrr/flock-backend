@@ -1,0 +1,70 @@
+databaseChangeLog:
+  - changeSet:
+      # Create the profile view
+      id: 202502221943
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createView:
+            replaceIfExists: true
+            viewName: profile
+            selectQuery: |
+              WITH timeslots_information AS (
+                SELECT person_id,
+                jsonb_agg_strict (
+                  jsonb_build_object('day', day, 'start_time', start_time, 'end_time', end_time, 'reliability', reliability, 'flexibility', flexibility)
+                ) AS timeslots
+                FROM timeslot
+                GROUP BY person_id
+              ), 
+              roles_information AS (
+                SELECT person_id,
+                       ARRAY_AGG (r.name) AS roles
+                FROM person p 
+                    JOIN role_assignment ra ON p.id = ra.person_id
+                    JOIN role r ON ra.role_id = r.id
+                GROUP BY person_id
+              ),
+              standing_information AS (
+                SELECT p.id AS person_id,
+                      jsonb_build_object('id', s.id, 'name', s.name) AS standing
+                FROM person p 
+                    JOIN standing s ON p.standing_id = s.id
+              ),
+              degree_information AS (
+                SELECT p.id AS person_id,
+                        jsonb_build_object('id', d.id, 'program_code', pr.code, 'program_name', pr.name, 'degree_type_code', dt.code, 'degree_type_name', dt.name) AS degree
+                FROM person p 
+                  JOIN degree d ON p.degree_id = d.id
+                  JOIN program pr ON d.program_code = pr.code
+                  JOIN degree_type dt ON d.degree_type_code = dt.code
+              ),
+              campus_choices_information AS (
+                SELECT p.id AS person_id,
+                   jsonb_agg_strict (
+                      jsonb_build_object('id', c.id, 'name', c.name)
+                      ORDER BY ccr.rank
+                    ) AS campus_choices
+                FROM person p
+                  JOIN campus_choice cc ON p.id = cc.person_id
+                  JOIN campus_choice_rank ccr ON cc.id = ccr.choice_id
+                  JOIN campus c ON cc.campus_id = c.id
+                GROUP BY p.id
+              )
+              SELECT p.id, 
+                      p.name, 
+                      p.email, 
+                      p.bio, 
+                      p.image, 
+                      d.degree,
+                      r.roles, 
+                      s.standing,
+                      t.timeslots,
+                      c.campus_choices
+              FROM person p 
+                LEFT JOIN roles_information r ON p.id = r.person_id
+                LEFT JOIN standing_information s ON p.id = s.person_id
+                LEFT JOIN degree_information d ON p.id = d.person_id
+                LEFT JOIN timeslots_information t ON p.id = t.person_id 
+                LEFT JOIN campus_choices_information c ON p.id = c.person_id 
+                
