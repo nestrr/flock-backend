@@ -5,7 +5,7 @@ import static com.nestrr.apps.flock.util.BeanCopyUtils.copyNonNullProperties;
 import com.nestrr.apps.flock.profile.entity.Person;
 import com.nestrr.apps.flock.profile.repository.PersonRepository;
 import java.sql.SQLDataException;
-import java.util.Optional;
+import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,11 +19,13 @@ public class PersonServiceImpl implements PersonService {
 
   @Override
   public void createPersonIfNeeded(String id, String email, String name, String image) {
-    Optional<Person> existingPerson = personRepository.findById(id);
-    existingPerson.orElseGet(
-        () ->
-            personRepository.save(
-                Person.builder().id(id).email(email).name(name).image(image).build()));
+    Person person = personRepository.findById(id).orElse(null);
+    if (person != null) {
+      person.setLastLogin(LocalDateTime.now());
+    } else {
+      person = Person.builder().id(id).email(email).name(name).image(image).build();
+    }
+    personRepository.save(person);
   }
 
   @Override
