@@ -12,5 +12,5 @@ public class ProfileUpdateRequest {
   private String programCode;
   private String degreeTypeCode;
   private CampusChoicesUpdateRequest campusChoices;
-  private TimeslotUpdateRequest preferredTimes;
+  private TimeslotUpdateRequest timeslots;
 }
