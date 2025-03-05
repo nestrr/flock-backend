@@ -2,8 +2,10 @@ package com.nestrr.apps.flock.profile.controller;
 
 import com.nestrr.apps.flock.profile.dto.OidcProfileRequest;
 import com.nestrr.apps.flock.profile.dto.ProfileDto;
+import com.nestrr.apps.flock.profile.dto.ProfileUpdateRequest;
 import com.nestrr.apps.flock.profile.service.ProfileFacadeService;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -28,5 +30,17 @@ public class ProfileController {
   public ResponseEntity<ProfileDto> getProfile(Authentication auth) {
     ProfileDto profileDto = profileFacadeService.getProfile(auth);
     return profileDto != null ? ResponseEntity.ok(profileDto) : ResponseEntity.notFound().build();
+  }
+
+  @PatchMapping("/me")
+  public ResponseEntity<ProfileDto> updateProfile(
+      Authentication auth, @RequestBody @Valid ProfileUpdateRequest profileUpdateRequest) {
+    profileFacadeService.updateProfile(auth, profileUpdateRequest);
+    return ResponseEntity.noContent().build();
+  }
+
+  public ResponseEntity<List<ProfileDto>> getProfiles(
+      Authentication auth, @RequestParam int page, @RequestParam int size) {
+    return ResponseEntity.badRequest().build();
   }
 }

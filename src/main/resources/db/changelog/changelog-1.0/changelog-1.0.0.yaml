@@ -125,23 +125,29 @@ databaseChangeLog:
               - column:
                   name: program_code
                   type: text
-                  constraints:
-                    foreignKeyName: degree__fk_program_code
-                    references: program(code)
-                    onUpdate: CASCADE
-                    onDelete: SET NULL
               - column:
                   name: degree_type_code
                   type: text
-                  constraints:
-                    foreignKeyName: degree__fk_degree_type
-                    references: degree_type(code)
-                    onUpdate: CASCADE
-                    onDelete: SET NULL
         - addUniqueConstraint:
             columnNames: degree_type_code, program_code
             tableName: degree
             constraintName: degree__unique_type_program_combination
+        - addForeignKeyConstraint:
+            constraintName: degree__fk_program_code
+            baseTableName: degree
+            baseColumnNames: program_code
+            referencedTableName: program
+            referencedColumnNames: code
+            onDelete: SET NULL
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: degree__fk_degree_type
+            baseTableName: degree
+            baseColumnNames: degree_type_code
+            referencedTableName: degree_type
+            referencedColumnNames: code
+            onDelete: SET NULL
+            onUpdate: CASCADE
   - changeSet:
       # Create person table.
       id: 202501011240
@@ -184,22 +190,28 @@ databaseChangeLog:
               - column:
                   name: standing_id
                   type: text
-                  constraints:
-                    foreignKeyName: person__fk_standing_id
-                    references: standing(id)
-                    onUpdate: CASCADE
-                    onDelete: SET NULL
               - column:
                   name: degree_id
                   type: text
-                  constraints:
-                    foreignKeyName: person__fk_degree_id
-                    references: degree(id)
-                    onUpdate: CASCADE
-                    onDelete: SET NULL
               - column:
                   name: last_login
                   type: datetime
+        - addForeignKeyConstraint:
+            constraintName: person__fk_degree_id
+            baseTableName: person
+            baseColumnNames: degree_id
+            referencedTableName: degree
+            referencedColumnNames: id
+            onDelete: SET NULL
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: person__fk_standing_id
+            baseTableName: person
+            baseColumnNames: standing_id
+            referencedTableName: standing
+            referencedColumnNames: id
+            onDelete: SET NULL
+            onUpdate: CASCADE
   - changeSet:
       # Create role table.
       id: 202501011245
@@ -246,19 +258,11 @@ databaseChangeLog:
                   name: person_id
                   type: text
                   constraints:
-                    foreignKeyName: role_assignment__fk_person_id
-                    references: person(id)
-                    onUpdate: CASCADE
-                    onDelete: CASCADE
                     nullable: false
               - column:
                   name: role_id
                   type: text
                   constraints:
-                    foreignKeyName: role_assignment__fk_role_id
-                    references: role(id)
-                    onUpdate: CASCADE
-                    onDelete: CASCADE
                     nullable: false
               - column:
                   name: version
@@ -269,6 +273,22 @@ databaseChangeLog:
             tableName: role_assignment
             columnNames: person_id, role_id
             constraintName: pk_role_assignment
+        - addForeignKeyConstraint:
+            constraintName: role_assignment_fk_person_id
+            baseTableName: role_assignment
+            baseColumnNames: person_id
+            referencedTableName: person
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: role_assignment_fk_role_id
+            baseTableName: role_assignment
+            baseColumnNames: role_id
+            referencedTableName: role
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
   - changeSet:
       # Create campus table.
       id: 202501011300
@@ -322,19 +342,11 @@ databaseChangeLog:
                   name: person_id
                   type: text
                   constraints:
-                    foreignKeyName: campus_choice__fk_person_id
-                    references: person(id)
-                    onUpdate: CASCADE
-                    onDelete: CASCADE
                     nullable: false
               - column:
                   name: campus_id
                   type: text
                   constraints:
-                    foreignKeyName: campus_choice__fk_campus_id
-                    references: campus(id)
-                    onUpdate: CASCADE
-                    onDelete: CASCADE
                     nullable: false
               - column:
                   name: version
@@ -345,6 +357,22 @@ databaseChangeLog:
             columnNames: person_id, campus_id
             tableName: campus_choice
             constraintName: campus_choice__unique_person_campus_combination
+        - addForeignKeyConstraint:
+            constraintName: campus_choice__fk_campus_id
+            baseTableName: campus_choice
+            baseColumnNames: campus_id
+            referencedTableName: campus
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: campus_choice_fk_person_id
+            baseTableName: campus_choice
+            baseColumnNames: person_id
+            referencedTableName: person
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
 
 
   - changeSet:
@@ -360,10 +388,6 @@ databaseChangeLog:
                   name: person_id
                   type: text
                   constraints:
-                    foreignKeyName: campus_choice_rank__fk_person_id
-                    references: person(id)
-                    onUpdate: CASCADE
-                    onDelete: CASCADE
                     nullable: false
               - column:
                   name: rank
@@ -379,15 +403,27 @@ databaseChangeLog:
                   name: choice_id
                   type: text
                   constraints:
-                    foreignKeyName: campus_choice_rank__fk_campus_choice_id
-                    references: campus(id)
-                    onUpdate: CASCADE
-                    onDelete: CASCADE
                     nullable: false
         - addPrimaryKey:
             tableName: campus_choice_rank
             columnNames: person_id, rank
             constraintName: pk_campus_choice_rank
+        - addForeignKeyConstraint:
+            constraintName: campus_choice_rank__fk_person_id
+            baseTableName: campus_choice_rank
+            baseColumnNames: person_id
+            referencedTableName: person
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: campus_choice_rank__fk_campus_choice_id
+            baseTableName: campus_choice_rank
+            baseColumnNames: choice_id
+            referencedTableName: campus_choice
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
   - changeSet:
       # Create flexibility table.
       id: 202501011320
@@ -481,12 +517,12 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: start_time
-                  type: datetime
+                  type: time
                   constraints:
                     nullable: false
               - column:
                   name: end_time
-                  type: datetime
+                  type: time
                   constraints:
                     nullable: false
               - column:
@@ -494,22 +530,30 @@ databaseChangeLog:
                   type: int
                   defaultValue: 0
                   constraints:
-                    foreignKeyName: timeslot__fk_reliability_code
-                    references: reliability(code)
-                    onUpdate: CASCADE
-                    onDelete: CASCADE
                     nullable: false
               - column:
                   name: flexibility
                   type: int
                   defaultValue: 0
                   constraints:
-                    foreignKeyName: timeslot__fk_flexibility_code
-                    references: flexibility(code)
-                    onUpdate: CASCADE
-                    onDelete: CASCADE
                     nullable: false
         - addPrimaryKey:
             tableName: timeslot
-            columnNames: person_id, day
+            columnNames: person_id, day, start_time, end_time
             constraintName: pk_timeslot
+        - addForeignKeyConstraint:
+            constraintName: timeslot__fk_reliability_code
+            baseTableName: timeslot
+            baseColumnNames: reliability
+            referencedTableName: reliability
+            referencedColumnNames: code
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: timeslot__fk_flexibility_code
+            baseTableName: timeslot
+            baseColumnNames: flexibility
+            referencedTableName: flexibility
+            referencedColumnNames: code
+            onDelete: CASCADE
+            onUpdate: CASCADE
