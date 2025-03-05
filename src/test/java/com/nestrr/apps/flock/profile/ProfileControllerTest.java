@@ -8,9 +8,7 @@ import com.nestrr.apps.flock.profile.dto.OidcProfileRequest;
 import com.nestrr.apps.flock.profile.dto.ProfileDto;
 import com.nestrr.apps.flock.profile.entity.Person;
 import io.restassured.http.ContentType;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -59,10 +57,10 @@ class ProfileControllerTest extends AbstractIntegrationTest {
             .email(oidcProfileRequest.getEmail())
             .image(oidcProfileRequest.getImage())
             .bio(null)
-            .preferredTimes(Map.of())
-            .firstLogin(true)
+            .timeslots(null)
+            .firstLogin(null)
             .roles(List.of("student"))
-            .campusChoices(new ArrayList<>())
+            .campusChoices(null)
             .build();
 
     ProfileDto profileDto =
