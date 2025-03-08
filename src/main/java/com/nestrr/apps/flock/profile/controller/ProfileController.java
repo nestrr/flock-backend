@@ -39,8 +39,9 @@ public class ProfileController {
     return ResponseEntity.noContent().build();
   }
 
+  @GetMapping()
   public ResponseEntity<List<ProfileDto>> getProfiles(
       Authentication auth, @RequestParam int page, @RequestParam int size) {
-    return ResponseEntity.badRequest().build();
+    return ResponseEntity.ok(profileFacadeService.getProfiles(auth, page, size));
   }
 }

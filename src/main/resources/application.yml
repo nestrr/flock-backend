@@ -4,6 +4,8 @@ oidc:
   jwk:
     url: https://login.microsoftonline.com/${MICROSOFT_ENTRA_TENANT_ID}/discovery/v2.0/keys
 spring:
+  liquibase:
+    contexts: dev # Set to 'dev, seed' in order to seed profiles.
   application:
     name: flock-backend
   datasource:

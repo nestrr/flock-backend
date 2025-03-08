@@ -1,0 +1,52 @@
+databaseChangeLog:
+  - changeSet:
+      # Seed the database person table.
+      id: 202503061340
+      author: maryamkhan
+      context: seed
+      runAlways: true
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  index: 0
+                  name: id
+                  type: string
+              - column:
+                  index: 1
+                  name: version
+                  type: numeric
+              - column:
+                  index: 2
+                  name: name
+                  type: string
+              - column:
+                  index: 3
+                  name: email
+                  type: string
+              - column:
+                  index: 4
+                  name: image
+                  type: string
+              - column:
+                  index: 5
+                  name: bio
+                  type: string
+              - column:
+                  index: 6
+                  name: standing_id
+                  type: string
+              - column:
+                  index: 7
+                  name: degree_id
+                  type: string
+              - column:
+                  index: 8
+                  name: last_login
+                  type: datetime
+            encoding: UTF-8
+            file: ../seed/dev_persons.csv
+            relativeToChangelogFile: true
+            tableName: person
+            quotchar: '"'
+            usePreparedStatements: true
