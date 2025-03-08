@@ -125,12 +125,13 @@ public class DataLoader implements ApplicationRunner {
   }
 
   public void run(ApplicationArguments args) {
+    System.out.println("DataLoader: Filling in details.");
     List<Standing> standings = standingRepository.findAll();
     List<DegreeView> degrees = degreeViewRepository.findAll(Sort.unsorted());
     List<Campus> campuses = campusRepository.findAll();
     List<Role> roles = roleRepository.findAll(Sort.unsorted());
     List<Person> persons = personRepository.findAll();
     persons.parallelStream().forEach(p -> fillDetails(p, standings, degrees, campuses, roles));
-    System.out.println("Filling details complete.");
+    System.out.println("DataLoader: Filling details complete.");
   }
 }
