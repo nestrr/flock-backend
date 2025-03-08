@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.ListPagingAndSortingRepository;
 
 public interface CampusChoiceRepository
     extends ListPagingAndSortingRepository<CampusChoice, String>,
-        CrudRepository<CampusChoice, String> {
+        ListCrudRepository<CampusChoice, String> {
 
   Optional<List<CampusChoice>> findByPersonId(String personId);
 

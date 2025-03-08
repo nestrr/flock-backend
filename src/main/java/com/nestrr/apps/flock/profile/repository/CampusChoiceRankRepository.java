@@ -6,12 +6,12 @@ import com.nestrr.apps.flock.profile.entity.id.CampusChoiceRankId;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.ListPagingAndSortingRepository;
 
 public interface CampusChoiceRankRepository
     extends ListPagingAndSortingRepository<CampusChoiceRank, CampusChoiceRankId>,
-        CrudRepository<CampusChoiceRank, CampusChoiceRankId> {
+        ListCrudRepository<CampusChoiceRank, CampusChoiceRankId> {
 
   Optional<List<CampusChoiceRank>> findByPersonId(String personId);
 
