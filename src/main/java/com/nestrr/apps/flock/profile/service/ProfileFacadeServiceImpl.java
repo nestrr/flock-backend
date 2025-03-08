@@ -12,6 +12,7 @@ import com.nestrr.apps.flock.profile.repository.ProfileRepository;
 import com.nestrr.apps.flock.standing.service.StandingService;
 import io.micrometer.common.util.StringUtils;
 import java.util.List;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,7 +105,7 @@ public class ProfileFacadeServiceImpl implements ProfileFacadeService {
   @Override
   public List<ProfileDto> getProfiles(Authentication a, int page, int size) {
     String personId = getJwtId(a);
-    return profileRepository.findAll().stream()
+    return profileRepository.findAll(PageRequest.of(page, size)).stream()
         .filter(p -> !p.getId().equals(personId))
         .map(profileMapper::toProfileDto)
         .toList();
