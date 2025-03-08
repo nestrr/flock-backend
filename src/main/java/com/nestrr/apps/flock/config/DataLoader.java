@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@ConditionalOnProperty(name = "seed", havingValue = "true")
+@ConditionalOnProperty(name = "spring.liquibase.contexts", havingValue = "dev, seed")
 public class DataLoader implements ApplicationRunner {
 
   private final PersonRepository personRepository;

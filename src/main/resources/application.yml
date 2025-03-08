@@ -1,10 +1,11 @@
-seed: false
 oidc:
   config:
     url: https://login.microsoftonline.com/${MICROSOFT_ENTRA_TENANT_ID}/v2.0/.well-known/openid-configuration
   jwk:
     url: https://login.microsoftonline.com/${MICROSOFT_ENTRA_TENANT_ID}/discovery/v2.0/keys
 spring:
+  liquibase:
+    contexts: dev # Set to 'dev, seed' in order to seed profiles.
   application:
     name: flock-backend
   datasource:

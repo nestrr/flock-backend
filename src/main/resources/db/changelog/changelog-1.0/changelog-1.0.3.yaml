@@ -1,9 +1,10 @@
 databaseChangeLog:
   - changeSet:
       # Seed the database person table.
-      id: 202501021340
+      id: 202503061340
       author: maryamkhan
-      runOnChange: true
+      context: seed
+      runAlways: true
       changes:
         - loadData:
             columns:
