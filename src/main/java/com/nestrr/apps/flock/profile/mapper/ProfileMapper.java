@@ -25,6 +25,7 @@ public interface ProfileMapper {
     List<TimeslotDto> timeslots = profile.getTimeslots();
     ProfileDto.ProfileDtoBuilder base =
         ProfileDto.builder()
+            .id(profile.getId())
             .name(profile.getName())
             .email(profile.getEmail())
             .image(profile.getImage())

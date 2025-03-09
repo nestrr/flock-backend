@@ -8,6 +8,7 @@ import lombok.Data;
 @Builder
 @Data
 public class ProfileDto {
+  private String id;
   private Boolean newAccount;
   private String name;
   private String email;
