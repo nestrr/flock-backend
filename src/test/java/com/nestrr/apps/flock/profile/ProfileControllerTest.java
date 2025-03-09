@@ -53,6 +53,7 @@ class ProfileControllerTest extends AbstractIntegrationTest {
 
     ProfileDto expectedProfileDto =
         ProfileDto.builder()
+            .id(getUserId())
             .name(oidcProfileRequest.getName())
             .email(oidcProfileRequest.getEmail())
             .image(oidcProfileRequest.getImage())

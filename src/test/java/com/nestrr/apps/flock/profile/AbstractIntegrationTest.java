@@ -2,10 +2,12 @@ package com.nestrr.apps.flock.profile;
 
 import static io.restassured.RestAssured.given;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nestrr.apps.flock.profile.repository.PersonRepository;
 import com.nestrr.apps.flock.profile.repository.RoleAssignmentRepository;
 import com.nestrr.apps.flock.profile.repository.RoleRepository;
-import com.nimbusds.jose.shaded.gson.JsonParser;
 import io.restassured.response.Response;
 import java.time.Duration;
 import java.util.Base64;
@@ -18,8 +20,6 @@ import org.springframework.boot.autoconfigure.jdbc.JdbcConnectionDetails;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -47,6 +47,7 @@ abstract class AbstractIntegrationTest {
   @Autowired PersonRepository personRepository;
   @Autowired RoleRepository userRoleRepository;
   @Autowired RoleAssignmentRepository roleAssignmentRepository;
+  @Autowired ObjectMapper mapper;
 
   @Value("${oidc.authorization.url}")
   private String authorizationUrl;
@@ -93,12 +94,15 @@ abstract class AbstractIntegrationTest {
     Base64.Decoder decoder = Base64.getDecoder();
 
     // Decode the string
-    byte[] decodedBytes = decoder.decode(bearerToken.split(".")[1]);
+    byte[] decodedBytes = decoder.decode(bearerToken.split("\\.")[1]);
 
     // Convert the byte array to a string
     String decodedToken = new String(decodedBytes);
-
-    System.out.println("Decoded string: " + decodedToken);
-    return new JsonParser().parse(decodedToken).getAsJsonObject().get("sub").getAsString();
+    try {
+      JsonNode node = mapper.readTree(decodedToken);
+      return node.get("sub").asText();
+    } catch (JsonProcessingException e) {
+      return "";
+    }
   }
 }
