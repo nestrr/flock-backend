@@ -1,0 +1,3 @@
+version,name,description
+0,"active","Group is being used by at least two members."
+0,"pending","Group has been created but no one has accepted their invite yet."
