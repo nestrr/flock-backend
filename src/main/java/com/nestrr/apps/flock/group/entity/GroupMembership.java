@@ -2,17 +2,27 @@ package com.nestrr.apps.flock.group.entity;
 
 import com.nestrr.apps.flock.group.entity.id.GroupMembershipId;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Objects;
 
 @Entity
-public record GroupMembership(@EmbeddedId GroupMembershipId id, @Version Integer version) {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public final class GroupMembership {
+  @EmbeddedId private GroupMembershipId id;
+  @Version private Integer version;
 
   @Override
   public boolean equals(Object other) {
     if (other == this) return true;
     if (other == null) return false;
-    if (other instanceof GroupMembership(GroupMembershipId id1, Integer version1)) {
-      return id1.equals(id) && version1.equals(version);
+    if (other instanceof GroupMembership otherGroupMembership) {
+      return otherGroupMembership.getId().equals(id)
+          && otherGroupMembership.getVersion().equals(version);
     }
     return false;
   }

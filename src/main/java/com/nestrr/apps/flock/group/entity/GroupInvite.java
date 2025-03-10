@@ -4,29 +4,31 @@ import com.nestrr.apps.flock.group.entity.id.GroupInviteId;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-public record GroupInvite(
-    @EmbeddedId GroupInviteId id,
-    @Version Integer version,
-    String statusId,
-    LocalDateTime expiresOn) {
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public final class GroupInvite {
+  @EmbeddedId private GroupInviteId id;
+  @Version private Integer version;
+  private String statusId;
+  private LocalDateTime expiresOn;
 
   @Override
   public boolean equals(Object other) {
     if (other == this) return true;
     if (other == null) return false;
-    if (other
-        instanceof
-        GroupInvite(
-            GroupInviteId id1,
-            Integer version1,
-            String statusId1,
-            LocalDateTime expiresOn1)) {
-      return id1.equals(id)
-          && version1.equals(version)
-          && statusId1.equals((statusId))
-          && expiresOn1.isEqual(expiresOn);
+    if (other instanceof GroupInvite otherGroupInvite) {
+      return otherGroupInvite.getId().equals(id)
+          && otherGroupInvite.getVersion().equals(version)
+          && otherGroupInvite.getStatusId().equals((statusId))
+          && otherGroupInvite.getExpiresOn().isEqual(expiresOn);
     }
     return false;
   }
