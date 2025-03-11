@@ -2,14 +2,15 @@ package com.nestrr.apps.flock.group.entity;
 
 import com.nestrr.apps.flock.group.entity.id.GroupMembershipId;
 import jakarta.persistence.*;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Objects;
-
 @Entity
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public final class GroupMembership {
