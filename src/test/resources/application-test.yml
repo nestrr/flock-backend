@@ -1,3 +1,15 @@
+spring:
+  mail:
+    host: smtp-mail.outlook.com
+    port: 587
+    username: fake@outlook.com
+    password: fake
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            required: true
 oidc:
   login:
     url: https://nestrr.wiremockapi.cloud/login

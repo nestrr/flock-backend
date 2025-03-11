@@ -21,7 +21,7 @@ public class GroupController {
 
   @GetMapping("/me")
   public ResponseEntity<List<GroupDto>> getSelfGroups(Authentication auth) {
-    return ResponseEntity.ok(List.of());
+    return ResponseEntity.ok(groupFacadeService.getSelfGroups(auth));
   }
 
   @PostMapping
