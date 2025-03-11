@@ -6,18 +6,18 @@ import static org.hamcrest.Matchers.samePropertyValuesAs;
 
 import com.nestrr.apps.flock.profile.dto.OidcProfileRequest;
 import com.nestrr.apps.flock.profile.dto.ProfileDto;
-import com.nestrr.apps.flock.profile.entity.Person;
+import com.nestrr.apps.flock.shared.AuthenticatedTest;
 import io.restassured.http.ContentType;
 import java.util.List;
 import org.junit.jupiter.api.*;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class ProfileControllerTest extends AbstractIntegrationTest {
-  @LocalServerPort private int port;
+class ProfileControllerTest extends AuthenticatedTest {
+
+
 
   @DynamicPropertySource
   static void registerPgProperties(DynamicPropertyRegistry registry) {
@@ -25,23 +25,6 @@ class ProfileControllerTest extends AbstractIntegrationTest {
     registry.add("spring.datasource.username", postgres::getUsername);
     registry.add("spring.datasource.password", postgres::getPassword);
     registry.add("spring.jpa.hibernate.ddl-auto", () -> "none");
-  }
-
-  @Test
-  @Order(0)
-  void canCreateProfile() {
-    OidcProfileRequest oidcProfileRequest =
-        OidcProfileRequest.builder().name("Test").email("test@gmail.com").image("image").build();
-    setBearerToken(oidcProfileRequest.getEmail(), "password");
-    given()
-        .port(port)
-        .contentType(ContentType.JSON)
-        .header("Authorization", "Bearer " + getBearerToken())
-        .when()
-        .body(oidcProfileRequest)
-        .post("/profile/me")
-        .then()
-        .statusCode(HttpStatus.NO_CONTENT.value());
   }
 
   @Test
@@ -66,7 +49,7 @@ class ProfileControllerTest extends AbstractIntegrationTest {
 
     ProfileDto profileDto =
         given()
-            .port(port)
+            .port(getPort())
             .contentType(ContentType.JSON)
             .header("Authorization", "Bearer " + getBearerToken())
             .when()
@@ -80,7 +63,7 @@ class ProfileControllerTest extends AbstractIntegrationTest {
     OidcProfileRequest oidcProfileRequest =
         OidcProfileRequest.builder().name("Test").email("test@gmail.com").image("image").build();
     given()
-        .port(port)
+        .port(getPort())
         .contentType(ContentType.JSON)
         .body(oidcProfileRequest)
         .when()
@@ -95,7 +78,7 @@ class ProfileControllerTest extends AbstractIntegrationTest {
         OidcProfileRequest.builder().name("Test").email("test@gmail.com").image("image").build();
     String fakeBearerToken = "randomxyz";
     given()
-        .port(port)
+        .port(getPort())
         .header("Authorization", fakeBearerToken)
         .contentType(ContentType.JSON)
         .body(oidcProfileRequest)
@@ -124,7 +107,7 @@ class ProfileControllerTest extends AbstractIntegrationTest {
 
     setBearerToken(oidcProfileRequest.getEmail(), "password");
     given()
-        .port(port)
+        .port(getPort())
         .contentType(ContentType.JSON)
         .header("Authorization", "Bearer " + getBearerToken())
         .body(oidcProfileRequest)
@@ -133,7 +116,7 @@ class ProfileControllerTest extends AbstractIntegrationTest {
 
     // Assert 204 NO CONTENT status code
     given()
-        .port(port)
+        .port(getPort())
         .contentType(ContentType.JSON)
         .header("Authorization", "Bearer " + getBearerToken())
         //        .body(updateProfileRequest)
@@ -142,7 +125,7 @@ class ProfileControllerTest extends AbstractIntegrationTest {
         .then()
         .statusCode(HttpStatus.NO_CONTENT.value());
 
-    Person person = personRepository.findByEmail(oidcProfileRequest.getEmail()).orElseThrow();
+    //    Person person = personRepository.findByEmail(oidcProfileRequest.getEmail()).orElseThrow();
     //    assertEquals(person.getName(), updateProfileRequest.getName());
     //    assertEquals(person.getImage(), updateProfileRequest.getProfilePicture());
     //    assertEquals(person.getBio(), updateProfileRequest.getBio());

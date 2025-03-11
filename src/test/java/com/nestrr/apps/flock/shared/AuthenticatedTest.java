@@ -1,33 +1,52 @@
-package com.nestrr.apps.flock.profile;
+package com.nestrr.apps.flock.shared;
 
 import static io.restassured.RestAssured.given;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nestrr.apps.flock.profile.dto.OidcProfileRequest;
 import com.nestrr.apps.flock.profile.repository.PersonRepository;
 import com.nestrr.apps.flock.profile.repository.RoleAssignmentRepository;
 import com.nestrr.apps.flock.profile.repository.RoleRepository;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import java.time.Duration;
 import java.util.Base64;
 import lombok.Getter;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.JdbcConnectionDetails;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.http.HttpStatus;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-@Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(profiles = {"test"})
-abstract class AbstractIntegrationTest {
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public abstract class AuthenticatedTest implements AbstractIntegrationTest {
+
+  @Getter @LocalServerPort private int port;
+
+  @Value("${oidc.authorization.url}")
+  private String authorizationUrl;
+
+  @Value("${oidc.token.url}")
+  private String tokenUrl;
+
+  @Value("${oidc.login.url}")
+  private String loginUrl;
+
+  @Getter private String bearerToken;
+
+  @Autowired private PersonRepository personRepository;
+  @Autowired private RoleRepository roleRepository;
+  @Autowired private RoleAssignmentRepository roleAssignmentRepository;
+  @Autowired private ObjectMapper mapper;
+
+  private final OidcProfileRequest oidcProfileRequest =
+      OidcProfileRequest.builder().name("Test").email("test@gmail.com").image("image").build();
 
   @Container
   @ServiceConnection(type = JdbcConnectionDetails.class)
@@ -43,22 +62,6 @@ abstract class AbstractIntegrationTest {
   static void afterAll() {
     postgres.stop();
   }
-
-  @Autowired PersonRepository personRepository;
-  @Autowired RoleRepository userRoleRepository;
-  @Autowired RoleAssignmentRepository roleAssignmentRepository;
-  @Autowired ObjectMapper mapper;
-
-  @Value("${oidc.authorization.url}")
-  private String authorizationUrl;
-
-  @Value("${oidc.token.url}")
-  private String tokenUrl;
-
-  @Value("${oidc.login.url}")
-  private String loginUrl;
-
-  @Getter private String bearerToken;
 
   public String fetchAuthorizationCode(String email, String password) {
     System.out.println("============++++++GETTING AUTH CODE++++++============");
@@ -104,5 +107,19 @@ abstract class AbstractIntegrationTest {
     } catch (JsonProcessingException e) {
       return "";
     }
+  }
+
+  @BeforeEach
+  void canCreateProfile() {
+    setBearerToken(oidcProfileRequest.getEmail(), "password");
+    given()
+        .port(port)
+        .contentType(ContentType.JSON)
+        .header("Authorization", "Bearer " + getBearerToken())
+        .when()
+        .body(oidcProfileRequest)
+        .post("/profile/me")
+        .then()
+        .statusCode(HttpStatus.NO_CONTENT.value());
   }
 }
