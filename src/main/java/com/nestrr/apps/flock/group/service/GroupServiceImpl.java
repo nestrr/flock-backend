@@ -23,7 +23,7 @@ public class GroupServiceImpl implements GroupService {
 
   @Override
   @Transactional
-  public String createGroup(String creatorId, NewGroupRequest newGroupRequest) {
+  public Group createGroup(String creatorId, NewGroupRequest newGroupRequest) {
     String pending = GroupStatuses.PENDING.value();
 
     String pendingStatusId =
@@ -34,15 +34,13 @@ public class GroupServiceImpl implements GroupService {
                 () ->
                     new NoSuchElementException(
                         "No appropriate group status ID found for status: pending."));
-    return groupRepository
-        .save(
-            Group.builder()
-                .name(newGroupRequest.name())
-                .description(newGroupRequest.description())
-                .image(newGroupRequest.image())
-                .adminId(creatorId)
-                .statusId(pendingStatusId)
-                .build())
-        .getId();
+    return groupRepository.save(
+        Group.builder()
+            .name(newGroupRequest.name())
+            .description(newGroupRequest.description())
+            .image(newGroupRequest.image())
+            .adminId(creatorId)
+            .statusId(pendingStatusId)
+            .build());
   }
 }

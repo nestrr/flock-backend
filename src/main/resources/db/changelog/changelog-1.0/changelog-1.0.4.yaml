@@ -293,3 +293,21 @@ databaseChangeLog:
             referencedColumnNames: id
             onDelete: CASCADE
             onUpdate: CASCADE
+  - changeSet:
+      # Create the profile view
+      id: 202503091626
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createView:
+            replaceIfExists: true
+            viewName: group_view
+            selectQuery: |
+              SELECT g.id, 
+                      g.name, 
+                      g.description, 
+                      g.image, 
+                      g.admin_id, 
+                      jsonb_build_object('id', gs.id, 'name', gs.name) AS status
+              FROM "group" g
+              JOIN group_status gs ON g.status_id = gs.id;
