@@ -2,17 +2,19 @@ package com.nestrr.apps.flock.profile;
 
 import static io.restassured.RestAssured.given;
 
-import com.nestrr.apps.flock.profile.dto.OidcProfileRequest;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nestrr.apps.flock.profile.repository.PersonRepository;
+import com.nestrr.apps.flock.profile.repository.RoleAssignmentRepository;
+import com.nestrr.apps.flock.profile.repository.RoleRepository;
+import com.nestrr.apps.flock.shared.AuthenticatedTest;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class DegreeTypeControllerTest extends AbstractIntegrationTest {
-  @LocalServerPort private int port;
+class DegreeTypeControllerTest extends AuthenticatedTest {
 
   @DynamicPropertySource
   static void registerPgProperties(DynamicPropertyRegistry registry) {
@@ -22,27 +24,10 @@ class DegreeTypeControllerTest extends AbstractIntegrationTest {
     registry.add("spring.jpa.hibernate.ddl-auto", () -> "none");
   }
 
-  private final OidcProfileRequest oidcProfileRequest =
-      OidcProfileRequest.builder().name("Test").email("test@gmail.com").image("image").build();
-
-  @BeforeEach
-  void canCreateProfile() {
-    setBearerToken(oidcProfileRequest.getEmail(), "password");
-    given()
-        .port(port)
-        .contentType(ContentType.JSON)
-        .header("Authorization", "Bearer " + getBearerToken())
-        .when()
-        .body(oidcProfileRequest)
-        .post("/profile/me")
-        .then()
-        .statusCode(HttpStatus.NO_CONTENT.value());
-  }
-
   @Test
   void canGetDegreeTypes() {
     given()
-        .port(port)
+        .port(getPort())
         .contentType(ContentType.JSON)
         .header("Authorization", "Bearer " + getBearerToken())
         .when()

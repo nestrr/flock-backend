@@ -1,9 +1,22 @@
+frontend:
+  url: http://localhost:3000
 oidc:
   config:
     url: https://login.microsoftonline.com/${MICROSOFT_ENTRA_TENANT_ID}/v2.0/.well-known/openid-configuration
   jwk:
     url: https://login.microsoftonline.com/${MICROSOFT_ENTRA_TENANT_ID}/discovery/v2.0/keys
 spring:
+  mail:
+    host: smtp-mail.outlook.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            required: true
   liquibase:
     contexts: dev # Set to 'dev, seed' in order to seed profiles.
   application:

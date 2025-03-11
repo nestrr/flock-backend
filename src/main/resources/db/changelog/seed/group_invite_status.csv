@@ -1,0 +1,5 @@
+version,name,description
+0,"response_pending","Invite sent but response not received."
+0,"expired","Invite expired due to lack of response."
+0,"accepted","Recipient accepted invite."
+0,"rejected","Recipient rejected invite."

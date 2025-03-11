@@ -1,0 +1,313 @@
+databaseChangeLog:
+  - changeSet:
+      # Create the group_invite_status table
+      id: 202503091435
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            tableName: group_invite_status
+            columns:
+              - column:
+                  name: id
+                  type: text
+                  defaultValueComputed: gen_random_uuid()::text
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_group_invite_status
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            columnNames: name
+            tableName: group_invite_status
+            constraintName: group_invite_status_unique_name
+  - changeSet:
+      # Create the group_status table
+      id: 202503091439
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            tableName: group_status
+            columns:
+              - column:
+                  name: id
+                  type: text
+                  defaultValueComputed: gen_random_uuid()::text
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_group_status
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            columnNames: name
+            tableName: group_status
+            constraintName: group_status_unique_name
+  - changeSet:
+      # Seed the group_invite_status table.
+      id: 202503091440
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  index: 0
+                  name: version
+                  type: numeric
+              - column:
+                  index: 1
+                  name: name
+                  type: string
+              - column:
+                  index: 2
+                  name: description
+                  type: string
+            encoding: UTF-8
+            file: ../seed/group_invite_status.csv
+            relativeToChangelogFile: true
+            tableName: group_invite_status
+            quotchar: '"'
+            usePreparedStatements: true
+  - changeSet:
+      # Seed the group_status table.
+      id: 202503091441
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - loadData:
+            columns:
+              - column:
+                  index: 0
+                  name: version
+                  type: numeric
+              - column:
+                  index: 1
+                  name: name
+                  type: string
+              - column:
+                  index: 2
+                  name: description
+                  type: string
+            encoding: UTF-8
+            file: ../seed/group_status.csv
+            relativeToChangelogFile: true
+            tableName: group_status
+            quotchar: '"'
+            usePreparedStatements: true
+  - changeSet:
+      # Create group table.
+      id: 202503091442
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            # Create group table
+            tableName: group
+            columns:
+              - column:
+                  name: id
+                  type: text
+                  defaultValueComputed: gen_random_uuid()::text
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_group
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: image
+                  type: text
+              - column:
+                  name: admin_id
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status_id
+                  type: text
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            constraintName: group_fk_admin_id
+            baseTableName: group
+            baseColumnNames: admin_id
+            referencedTableName: person
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: group_fk_status_id
+            baseTableName: group
+            baseColumnNames: status_id
+            referencedTableName: group_status
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+  - changeSet:
+      # Create group_invite table.
+      id: 202503091445
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            # Create group_invite table
+            tableName: group_invite
+            columns:
+              - column:
+                  name: group_id
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: person_id
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: status_id
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: expires_on
+                  type: datetime
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: group_invite
+            columnNames: group_id, person_id
+            constraintName: pk_group_invite
+        - addForeignKeyConstraint:
+            constraintName: group_invite_fk_status_id
+            baseTableName: group_invite
+            baseColumnNames: status_id
+            referencedTableName: group_invite_status
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: group_invite_fk_group_id
+            baseTableName: group_invite
+            baseColumnNames: group_id
+            referencedTableName: group
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: group_invite_fk_person_id
+            baseTableName: group_invite
+            baseColumnNames: person_id
+            referencedTableName: person
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+  - changeSet:
+      # Create group_membership table.
+      id: 202503091448
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            # Create group_membership table
+            tableName: group_membership
+            columns:
+              - column:
+                  name: group_id
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: person_id
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: group_membership
+            columnNames: group_id, person_id
+            constraintName: pk_group_membership
+        - addForeignKeyConstraint:
+            constraintName: group_membership_fk_group_id
+            baseTableName: group_membership
+            baseColumnNames: group_id
+            referencedTableName: group
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+        - addForeignKeyConstraint:
+            constraintName: group_membership_fk_person_id
+            baseTableName: group_membership
+            baseColumnNames: person_id
+            referencedTableName: person
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: CASCADE
+  - changeSet:
+      # Create the profile view
+      id: 202503091626
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createView:
+            replaceIfExists: true
+            viewName: group_view
+            selectQuery: |
+              SELECT g.id, 
+                      g.name, 
+                      g.description, 
+                      g.image, 
+                      g.admin_id, 
+                      jsonb_build_object('id', gs.id, 'name', gs.name) AS status
+              FROM "group" g
+              JOIN group_status gs ON g.status_id = gs.id;
