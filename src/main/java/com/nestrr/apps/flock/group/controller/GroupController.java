@@ -38,7 +38,7 @@ public class GroupController {
   public ResponseEntity<String> updateGroup(
       @PathVariable String groupId, @Valid @RequestBody UpdateGroupRequest updateGroupRequest) {
     groupFacadeService.updateGroup(updateGroupRequest);
-    return ResponseEntity.ok().build();
+    return ResponseEntity.noContent().build();
   }
 
   public boolean isGroupOwner(String groupId, String personId) {
