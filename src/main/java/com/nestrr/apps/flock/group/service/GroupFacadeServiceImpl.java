@@ -4,6 +4,7 @@ import static com.nestrr.apps.flock.util.AuthenticationUtil.getJwtId;
 
 import com.nestrr.apps.flock.group.dto.GroupDto;
 import com.nestrr.apps.flock.group.dto.NewGroupRequest;
+import com.nestrr.apps.flock.group.dto.UpdateGroupRequest;
 import com.nestrr.apps.flock.group.entity.Group;
 import java.util.*;
 import org.springframework.security.core.Authentication;
@@ -38,5 +39,10 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
   public List<GroupDto> getSelfGroups(Authentication auth) {
     String personId = getJwtId(auth);
     return groupMembershipService.getGroupsByPersonId(personId);
+  }
+
+  @Override
+  public Group updateGroup(UpdateGroupRequest updateGroupRequest) {
+    return groupService.updateGroup(updateGroupRequest);
   }
 }
