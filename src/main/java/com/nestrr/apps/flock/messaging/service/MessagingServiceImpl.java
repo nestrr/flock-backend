@@ -81,7 +81,15 @@ public class MessagingServiceImpl implements MessagingService {
   }
 
   @Override
-  public void sendGroupMemberGoodbyeNotification(DeletedGroupMembershipContext context) {}
+  public void sendGroupMemberGoodbyeNotification(DeletedGroupMembershipContext context) {
+    Email email;
+    if (context.member().getId().equals(context.removerId())) {
+      email = createGoodbyeEmail(context, context.member().getEmail());
+    } else {
+      email = createRemovalEmail(context, context.member().getEmail());
+    }
+    emailService.sendSystemEmail(email);
+  }
 
   public Email createInviteEmail(
       GroupInviteContext context, String recipientId, String recipientEmail) {
@@ -162,6 +170,20 @@ public class MessagingServiceImpl implements MessagingService {
     ctx.setVariable("mainUrl", frontend);
 
     String content = emailTemplateEngine.process("group-goodbye/template.html", ctx);
+    return Email.builder().subject(subject).htmlBody(content).recipient(recipientEmail).build();
+  }
+
+  public Email createRemovalEmail(DeletedGroupMembershipContext context, String recipientEmail) {
+    String subject =
+        String.format(
+            "Important: you have been removed from the %s group.", context.group().getName());
+    Context ctx = new Context(Locale.US);
+    ctx.setVariable("pageTitle", subject);
+    ctx.setVariable("groupName", context.group().getName());
+    ctx.setVariable("groupUrl", String.format("%s/group/%s", frontend, context.group().getId()));
+    ctx.setVariable("mainUrl", frontend);
+
+    String content = emailTemplateEngine.process("group-removal/template.html", ctx);
     return Email.builder().subject(subject).htmlBody(content).recipient(recipientEmail).build();
   }
 }

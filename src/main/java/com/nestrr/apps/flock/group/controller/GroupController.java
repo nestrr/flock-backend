@@ -53,9 +53,9 @@ public class GroupController {
   @PreAuthorize(
       "#memberId == authentication.name || @groupFacadeServiceImpl.isGroupOwner(#groupId, authentication.name)")
   public ResponseEntity<String> removeMember(
-      @PathVariable String groupId, @PathVariable String memberId) {
+      Authentication auth, @PathVariable String groupId, @PathVariable String memberId) {
     try {
-      groupFacadeService.removeMember(groupId, memberId);
+      groupFacadeService.removeMember(auth, groupId, memberId);
       return ResponseEntity.noContent().build();
     } catch (IllegalArgumentException e) {
       return ResponseEntity.badRequest()

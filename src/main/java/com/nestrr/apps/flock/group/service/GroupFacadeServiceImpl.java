@@ -58,9 +58,10 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
     sendInvites(group, memberIds);
   }
 
-  @Override
   @Transactional
-  public void removeMember(String groupId, String memberId) {
+  @Override
+  public void removeMember(Authentication auth, String groupId, String memberId) {
+    String removerId = getJwtId(auth);
     if (groupService.isGroupAdmin(groupId, memberId))
       throw new IllegalArgumentException(
           String.format(
@@ -70,7 +71,11 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
     Group group = groupService.getGroup(groupId);
     Person member = personService.getPerson(memberId);
     DeletedGroupMembershipContext context =
-        DeletedGroupMembershipContext.builder().group(group).member(member).build();
+        DeletedGroupMembershipContext.builder()
+            .group(group)
+            .member(member)
+            .removerId(removerId)
+            .build();
     messagingService.sendGroupMemberGoodbyeNotification(context);
   }
 

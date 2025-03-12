@@ -5,4 +5,4 @@ import com.nestrr.apps.flock.profile.entity.Person;
 import lombok.Builder;
 
 @Builder
-public record DeletedGroupMembershipContext(Group group, Person member) {}
+public record DeletedGroupMembershipContext(Group group, Person member, String removerId) {}
