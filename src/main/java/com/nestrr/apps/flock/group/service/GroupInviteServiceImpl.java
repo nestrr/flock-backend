@@ -51,6 +51,25 @@ public class GroupInviteServiceImpl implements GroupInviteService {
     sendInvites(group, recipientIds);
   }
 
+  @Override
+  public List<GroupInvite> getGroupInvites(String groupId, GroupInviteStatuses status) {
+    List<GroupInvite> invites = groupInviteRepository.findByIdGroupId(groupId);
+    GroupInviteStatus completeStatus =
+        groupInviteStatusRepository
+            .findByName(status.value())
+            .orElseThrow(
+                () ->
+                    new NoSuchElementException(
+                        String.format(
+                            "Group invite status with value %s does not exist", status.value())));
+    return invites.stream().filter((i) -> i.getStatusId().equals(completeStatus.getId())).toList();
+  }
+
+  @Override
+  public void deleteByGroupId(String groupId) {
+    groupInviteRepository.deleteByIdGroupId(groupId);
+  }
+
   private void storeInvite(String groupId, String recipientId, String statusId) {
     groupInviteRepository.save(
         GroupInvite.builder()
