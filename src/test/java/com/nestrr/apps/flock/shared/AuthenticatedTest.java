@@ -39,7 +39,7 @@ public abstract class AuthenticatedTest implements AbstractIntegrationTest {
   private final OidcProfileRequest OIDC_PROFILE_REQUEST =
       OidcProfileRequest.builder().name("Test").email("test@gmail.com").image("image").build();
 
-  private Authenticator.Authenticated auth;
+  private Authenticated auth;
   @Autowired private PersonRepository personRepository;
   @Autowired private RoleRepository roleRepository;
   @Autowired private RoleAssignmentRepository roleAssignmentRepository;
