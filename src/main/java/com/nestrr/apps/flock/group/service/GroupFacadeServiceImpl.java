@@ -63,16 +63,19 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
   }
 
   @Override
+  @Transactional
   public Boolean isGroupOwner(String groupId, String personId) {
     return groupService.isGroupOwner(groupId, personId);
   }
 
   @Override
+  @Transactional
   public void updateGroup(String groupId, UpdateGroupRequest updateGroupRequest) {
     groupService.updateGroup(groupId, updateGroupRequest);
   }
 
   @Override
+  @Transactional
   public void deleteGroup(String groupId) {
     List<GroupInvite> pendingInvites =
         groupInviteService.getGroupInvites(groupId, GroupInviteStatuses.RESPONSE_PENDING);

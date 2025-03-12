@@ -103,7 +103,6 @@ public class GroupInviteServiceImpl implements GroupInviteService {
   }
 
   private String getStatusId(GroupInviteStatuses status) {
-
     return groupInviteStatusRepository
         .findByName(status.value())
         .map(GroupInviteStatus::getId)
@@ -113,6 +112,18 @@ public class GroupInviteServiceImpl implements GroupInviteService {
                     String.format(
                         "No appropriate group invite status ID found for status: %s.",
                         status.value())));
+  }
+
+  private GroupInviteStatuses getStatus(String id) {
+    String name =
+        groupInviteStatusRepository
+            .findById(id)
+            .map(GroupInviteStatus::getName)
+            .orElseThrow(
+                () ->
+                    new NoSuchElementException(
+                        String.format("No status found for status ID: %s.", id)));
+    return GroupInviteStatuses.valueOf(name);
   }
 
   private void sendInvites(Group group, List<String> recipientIds) {
