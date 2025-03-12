@@ -14,8 +14,6 @@ import com.nestrr.apps.flock.messaging.service.MessagingService;
 import com.nestrr.apps.flock.profile.entity.Person;
 import com.nestrr.apps.flock.profile.repository.PersonRepository;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,11 +59,10 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
-  public Group updateGroup(UpdateGroupRequest updateGroupRequest) {
-    String groupId = updateGroupRequest.groupId();
+  public Group updateGroup(String groupId, UpdateGroupRequest updateGroupRequest) {
     Group groupFromUpdate =
         Group.builder()
-            .id(updateGroupRequest.groupId())
+            .id(groupId)
             .name(updateGroupRequest.name())
             .image(updateGroupRequest.image())
             .description(updateGroupRequest.description())

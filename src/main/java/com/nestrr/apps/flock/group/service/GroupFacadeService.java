@@ -14,5 +14,5 @@ public interface GroupFacadeService {
 
   Boolean isGroupOwner(String groupId, String personId);
 
-  Group updateGroup(UpdateGroupRequest updateGroupRequest);
+  Group updateGroup(String groupId, UpdateGroupRequest updateGroupRequest);
 }

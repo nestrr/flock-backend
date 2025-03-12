@@ -37,7 +37,7 @@ public class GroupController {
   @PreAuthorize("isGroupOwner(#groupId, authentication.name)")
   public ResponseEntity<String> updateGroup(
       @PathVariable String groupId, @Valid @RequestBody UpdateGroupRequest updateGroupRequest) {
-    groupFacadeService.updateGroup(updateGroupRequest);
+    groupFacadeService.updateGroup(groupId, updateGroupRequest);
     return ResponseEntity.noContent().build();
   }
 
