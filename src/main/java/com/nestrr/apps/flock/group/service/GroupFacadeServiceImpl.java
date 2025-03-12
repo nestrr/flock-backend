@@ -38,6 +38,14 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
   }
 
   @Override
+  @Transactional
+  public void inviteUsers(Authentication auth, String groupId, List<String> memberIds) {
+    if (memberIds.size() == 1 && memberIds.getFirst().equals(getJwtId(auth))) return;
+    Group group = groupService.findGroupById(groupId).orElseThrow(NoSuchElementException::new);
+    groupInviteService.createInvites(group, memberIds);
+  }
+
+  @Override
   public List<GroupDto> getSelfGroups(Authentication auth) {
     String personId = getJwtId(auth);
     return groupMembershipService.getGroupsByPersonId(personId);

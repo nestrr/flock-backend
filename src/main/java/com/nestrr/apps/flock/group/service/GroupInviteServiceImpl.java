@@ -2,7 +2,6 @@ package com.nestrr.apps.flock.group.service;
 
 import com.nestrr.apps.flock.group.constants.GroupInviteConstants;
 import com.nestrr.apps.flock.group.constants.GroupInviteStatuses;
-import com.nestrr.apps.flock.group.dto.NewGroupInviteRequest;
 import com.nestrr.apps.flock.group.entity.Group;
 import com.nestrr.apps.flock.group.entity.GroupInvite;
 import com.nestrr.apps.flock.group.entity.GroupInviteStatus;
@@ -39,15 +38,20 @@ public class GroupInviteServiceImpl implements GroupInviteService {
 
   @Transactional
   @Override
-  public void createInvites(NewGroupInviteRequest request) {
-    this.storeInvite(request.groupId(), request.recipientId(), getPendingStatusId());
-  }
-
-  @Transactional
-  @Override
   public void createInvites(Group group, List<String> recipientIds) {
+    String pendingStatusId = getStatusId(GroupInviteStatuses.RESPONSE_PENDING);
+    String acceptedStatusId = getStatusId(GroupInviteStatuses.ACCEPTED);
     recipientIds.forEach(
-        recipientId -> storeInvite(group.getId(), recipientId, getPendingStatusId()));
+        recipientId -> {
+          GroupInvite invite =
+              groupInviteRepository
+                  .findById(new GroupInviteId(group.getId(), recipientId))
+                  .orElse(null);
+          if (invite == null || !invite.getStatusId().equals(acceptedStatusId)) {
+            storeInvite(group.getId(), recipientId, pendingStatusId);
+          }
+        });
+
     sendInvites(group, recipientIds);
   }
 
@@ -79,17 +83,17 @@ public class GroupInviteServiceImpl implements GroupInviteService {
             .build());
   }
 
-  private String getPendingStatusId() {
-    String pending = GroupInviteStatuses.RESPONSE_PENDING.value();
+  private String getStatusId(GroupInviteStatuses status) {
 
     return groupInviteStatusRepository
-        .findByName(pending)
+        .findByName(status.value())
         .map(GroupInviteStatus::getId)
         .orElseThrow(
             () ->
                 new NoSuchElementException(
                     String.format(
-                        "No appropriate group invite status ID found for status: %s.", pending)));
+                        "No appropriate group invite status ID found for status: %s.",
+                        status.value())));
   }
 
   private void sendInvites(Group group, List<String> recipientIds) {

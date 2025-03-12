@@ -19,6 +19,7 @@ import com.nestrr.apps.flock.profile.entity.Person;
 import com.nestrr.apps.flock.profile.repository.PersonRepository;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +42,11 @@ public class GroupServiceImpl implements GroupService {
     this.groupStatusRepository = groupStatusRepository;
     this.messagingService = messagingService;
     this.personRepository = personRepository;
+  }
+
+  @Override
+  public Optional<Group> findGroupById(String groupId) {
+    return groupRepository.findById(groupId);
   }
 
   @Override
@@ -67,7 +73,7 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
-  public Group updateGroup(String groupId, UpdateGroupRequest updateGroupRequest) {
+  public void updateGroup(String groupId, UpdateGroupRequest updateGroupRequest) {
     Group groupFromUpdate =
         Group.builder()
             .id(groupId)
@@ -93,7 +99,6 @@ public class GroupServiceImpl implements GroupService {
       // well-known details of the group
       messagingService.sendAdminChangeNotification(context);
     }
-    return groupFromUpdate;
   }
 
   @Override

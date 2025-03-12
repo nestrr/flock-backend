@@ -16,4 +16,6 @@ public interface GroupFacadeService {
   void updateGroup(String groupId, UpdateGroupRequest updateGroupRequest);
 
   void deleteGroup(String groupId);
+
+  void inviteUsers(Authentication auth, String groupId, List<String> memberIds);
 }

@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.samePropertyValuesAs;
 import com.nestrr.apps.flock.profile.dto.OidcProfileRequest;
 import com.nestrr.apps.flock.profile.dto.ProfileDto;
 import com.nestrr.apps.flock.shared.AuthenticatedTest;
+import com.nestrr.apps.flock.shared.Authenticator;
 import io.restassured.http.ContentType;
 import java.util.List;
 import org.junit.jupiter.api.*;
@@ -16,8 +17,6 @@ import org.springframework.test.context.DynamicPropertySource;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ProfileControllerTest extends AuthenticatedTest {
-
-
 
   @DynamicPropertySource
   static void registerPgProperties(DynamicPropertyRegistry registry) {
@@ -32,7 +31,8 @@ class ProfileControllerTest extends AuthenticatedTest {
   void canGetProfile() {
     OidcProfileRequest oidcProfileRequest =
         OidcProfileRequest.builder().name("Test").email("test@gmail.com").image("image").build();
-    setBearerToken(oidcProfileRequest.getEmail(), "password");
+    Authenticator.Authenticated dummyAuth =
+        getAuthenticator().of(oidcProfileRequest.getEmail(), "password");
 
     ProfileDto expectedProfileDto =
         ProfileDto.builder()
@@ -105,7 +105,7 @@ class ProfileControllerTest extends AuthenticatedTest {
     //            .bio("A descriptive shiny new bio")
     //            .build();
 
-    setBearerToken(oidcProfileRequest.getEmail(), "password");
+    //    setBearerToken(oidcProfileRequest.getEmail(), "password");
     given()
         .port(getPort())
         .contentType(ContentType.JSON)

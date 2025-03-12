@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 
 import com.nestrr.apps.flock.group.dto.GroupDto;
 import com.nestrr.apps.flock.group.dto.NewGroupRequest;
+import com.nestrr.apps.flock.group.dto.UpdateGroupRequest;
 import com.nestrr.apps.flock.group.entity.Group;
 import com.nestrr.apps.flock.group.entity.GroupInvite;
 import com.nestrr.apps.flock.group.repository.GroupInviteRepository;
@@ -43,6 +44,7 @@ class GroupControllerTest extends AuthenticatedTest {
             .header("Authorization", "Bearer " + getBearerToken())
             .when()
             .get("/group/me")
+            .getBody()
             .jsonPath();
     List<GroupDto> groups = jsonPath.getList("$");
     Assertions.assertEquals(0, groups.size());
@@ -106,10 +108,158 @@ class GroupControllerTest extends AuthenticatedTest {
         .port(getPort())
         .header("Authorization", "Bearer " + getBearerToken())
         .when()
-        .body(request)
         .delete(String.format("/group/%s", group.getId()))
         .then()
         .statusCode(HttpStatus.NO_CONTENT.value());
     Assertions.assertTrue(groupRepository.findById(group.getId()).isEmpty());
+  }
+
+  @Test
+  void canUpdateGroup() {
+    NewGroupRequest request =
+        new NewGroupRequest(
+            List.of(), "Test group for group deletion", "Test description", "Test image");
+    given()
+        .port(getPort())
+        .contentType(ContentType.JSON)
+        .header("Authorization", "Bearer " + getBearerToken())
+        .when()
+        .body(request)
+        .post("/group")
+        .then()
+        .statusCode(HttpStatus.OK.value());
+    UpdateGroupRequest updateRequest =
+        new UpdateGroupRequest(
+            getUserId(), "new name", "my new group description!!", "someimage.com/image");
+    Group group =
+        groupRepository.findByAdminId(getUserId()).stream()
+            .filter(g -> g.getName().equals(request.name()))
+            .toList()
+            .getFirst();
+    given()
+        .port(getPort())
+        .header("Authorization", "Bearer " + getBearerToken())
+        .when()
+        .contentType(ContentType.JSON)
+        .body(updateRequest)
+        .patch(String.format("/group/%s", group.getId()))
+        .then()
+        .statusCode(HttpStatus.NO_CONTENT.value());
+  }
+
+  @Test
+  @Disabled(value = "Need to set up alternate sender email config for tests to use.")
+  void canInviteUserToGroup() {
+    NewGroupRequest request =
+        new NewGroupRequest(
+            List.of(), "Test group for single invite", "Test description", "Test image");
+    given()
+        .port(getPort())
+        .contentType(ContentType.JSON)
+        .header("Authorization", "Bearer " + getBearerToken())
+        .when()
+        .body(request)
+        .post("/group")
+        .then()
+        .statusCode(HttpStatus.OK.value());
+    Group group =
+        groupRepository.findByAdminId(getUserId()).stream()
+            .filter(g -> g.getName().equals(request.name()))
+            .toList()
+            .getFirst();
+    Person person =
+        personRepository.save(
+            Person.builder().id("Some id").name("some name").email("an email").build());
+    given()
+        .port(getPort())
+        .header("Authorization", "Bearer " + getBearerToken())
+        .when()
+        .contentType(ContentType.JSON)
+        .post(String.format("/group-invite/%s/member/%s", group.getId(), person.getId()))
+        .then()
+        .statusCode(HttpStatus.OK.value());
+  }
+
+  @Test
+  void cannotInviteUserIfNotMember() {
+    String currentUserToken = getBearerToken();
+    Person member =
+        personRepository.save(
+            Person.builder()
+                .id("randomid123")
+                .email("member@gmail.com")
+                .name("Group member")
+                .build());
+    String outsiderToken = getAuthenticator().of("outsider@gmail.com", "password").getBearerToken();
+    NewGroupRequest request =
+        new NewGroupRequest(
+            List.of(),
+            "Test group for cannotInviteUserIfNotMember",
+            "Test description",
+            "Test image");
+    given()
+        .port(getPort())
+        .contentType(ContentType.JSON)
+        .header("Authorization", "Bearer " + currentUserToken)
+        .when()
+        .body(request)
+        .post("/group")
+        .then()
+        .statusCode(HttpStatus.OK.value());
+    Group group =
+        groupRepository.findByAdminId(getUserId()).stream()
+            .filter(g -> g.getName().equals(request.name()))
+            .toList()
+            .getFirst();
+    given()
+        .port(getPort())
+        .header("Authorization", "Bearer " + outsiderToken)
+        .when()
+        .contentType(ContentType.JSON)
+        .post(String.format("/group-invite/%s/member/%s", group.getId(), member.getId()))
+        .then()
+        .statusCode(HttpStatus.FORBIDDEN.value());
+  }
+
+  @Test
+  void cannotBatchInviteUserIfNotMember() {
+    String activeUserToken = getBearerToken();
+    Person currentMember =
+        personRepository.save(
+            Person.builder()
+                .id("randomid456")
+                .email("member2@gmail.com")
+                .name("Group member")
+                .build());
+    String outsiderToken = getAuthenticator().of("outsider@gmail.com", "password").getBearerToken();
+    NewGroupRequest request =
+        new NewGroupRequest(
+            List.of(),
+            "Test group for cannotInviteUserIfNotMember",
+            "Test description",
+            "Test image");
+    given()
+        .port(getPort())
+        .contentType(ContentType.JSON)
+        .header("Authorization", "Bearer " + activeUserToken)
+        .when()
+        .body(request)
+        .post("/group")
+        .then()
+        .statusCode(HttpStatus.OK.value());
+    Group group =
+        groupRepository.findByAdminId(getUserId()).stream()
+            .filter(g -> g.getName().equals(request.name()))
+            .toList()
+            .getFirst();
+    given()
+        .port(getPort())
+        .header("Authorization", "Bearer " + outsiderToken)
+        .when()
+        .contentType(ContentType.JSON)
+        .body(List.of("memberId1", "memberId2"))
+        .post(String.format("/group-invite/%s/member", group.getId()))
+        .then()
+        .statusCode(HttpStatus.FORBIDDEN.value());
   }
 }
