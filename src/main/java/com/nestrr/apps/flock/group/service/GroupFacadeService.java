@@ -12,5 +12,7 @@ public interface GroupFacadeService {
 
   List<GroupDto> getSelfGroups(Authentication auth);
 
+  Boolean isGroupOwner(String groupId, String personId);
+
   Group updateGroup(UpdateGroupRequest updateGroupRequest);
 }

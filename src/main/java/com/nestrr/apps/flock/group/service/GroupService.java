@@ -8,4 +8,6 @@ public interface GroupService {
   Group createGroup(String creatorId, NewGroupRequest newGroupRequest);
 
   Group updateGroup(UpdateGroupRequest updateGroupRequest);
+
+  Boolean isGroupOwner(String groupId, String personId);
 }

@@ -42,6 +42,11 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
   }
 
   @Override
+  public Boolean isGroupOwner(String groupId, String personId) {
+    return groupService.isGroupOwner(groupId, personId);
+  }
+
+  @Override
   public Group updateGroup(UpdateGroupRequest updateGroupRequest) {
     return groupService.updateGroup(updateGroupRequest);
   }

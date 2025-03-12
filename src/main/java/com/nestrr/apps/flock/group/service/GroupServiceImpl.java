@@ -14,6 +14,8 @@ import com.nestrr.apps.flock.messaging.service.MessagingService;
 import com.nestrr.apps.flock.profile.entity.Person;
 import com.nestrr.apps.flock.profile.repository.PersonRepository;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -87,5 +89,14 @@ public class GroupServiceImpl implements GroupService {
       messagingService.sendAdminChangeNotification(context);
     }
     return groupFromUpdate;
+  }
+
+  @Override
+  public Boolean isGroupOwner(String groupId, String personId) {
+    Group group =
+        groupRepository
+            .findById(groupId)
+            .orElseThrow(() -> new NoSuchElementException("Group does not exist."));
+    return group.getAdminId().equals(personId);
   }
 }
