@@ -70,8 +70,10 @@ public class MessagingServiceImpl implements MessagingService {
                                 new NullPointerException(
                                     String.format("Person with ID %s does not have an email", id))))
             .toList();
-    Email email = createGroupDeletionEmail(context, memberEmails);
-    emailService.sendSystemEmail(email);
+    memberEmails.forEach(
+        email -> {
+          emailService.sendSystemEmail(createGroupDeletionEmail(context, email));
+        });
   }
 
   public Email createInviteEmail(
@@ -89,11 +91,7 @@ public class MessagingServiceImpl implements MessagingService {
         String.format("%s/invite/%s?id=%s", frontend, context.group().getId(), recipientId));
 
     String content = emailTemplateEngine.process("group-invite/template.html", ctx);
-    return Email.builder()
-        .subject(subject)
-        .htmlBody(content)
-        .recipients(List.of(recipientEmail))
-        .build();
+    return Email.builder().subject(subject).htmlBody(content).recipient(recipientEmail).build();
   }
 
   public Email createAdminRemovalEmail(AdminChangeContext context, String recipientEmail) {
@@ -107,11 +105,7 @@ public class MessagingServiceImpl implements MessagingService {
     ctx.setVariable("newAdminId", context.newAdmin().getId());
 
     String content = emailTemplateEngine.process("group-admin-removal/template.html", ctx);
-    return Email.builder()
-        .subject(subject)
-        .htmlBody(content)
-        .recipients(List.of(recipientEmail))
-        .build();
+    return Email.builder().subject(subject).htmlBody(content).recipient(recipientEmail).build();
   }
 
   public Email createAdminAssignmentEmail(AdminChangeContext context, String recipientEmail) {
@@ -125,14 +119,10 @@ public class MessagingServiceImpl implements MessagingService {
     ctx.setVariable("oldAdminName", context.oldAdmin().getName());
 
     String content = emailTemplateEngine.process("group-admin-assignment/template.html", ctx);
-    return Email.builder()
-        .subject(subject)
-        .htmlBody(content)
-        .recipients(List.of(recipientEmail))
-        .build();
+    return Email.builder().subject(subject).htmlBody(content).recipient(recipientEmail).build();
   }
 
-  public Email createGroupDeletionEmail(GroupDeleteContext context, List<String> recipientEmails) {
+  public Email createGroupDeletionEmail(GroupDeleteContext context, String recipientEmail) {
     String subject = String.format("Important: %s has shut down.", context.group().getName());
     Context ctx = new Context(Locale.US);
     ctx.setVariable("pageTitle", subject);
@@ -140,6 +130,6 @@ public class MessagingServiceImpl implements MessagingService {
     ctx.setVariable("mainUrl", frontend);
 
     String content = emailTemplateEngine.process("group-deletion/template.html", ctx);
-    return Email.builder().subject(subject).htmlBody(content).recipients(recipientEmails).build();
+    return Email.builder().subject(subject).htmlBody(content).recipient(recipientEmail).build();
   }
 }

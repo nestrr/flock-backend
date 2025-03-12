@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,11 +18,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtAuthenticationConverter implements Converter<Jwt, JwtAuthenticationToken> {
-
+  private final Logger log;
   private final RoleAssignmentRepository roleAssignmentRepository;
 
   public JwtAuthenticationConverter(RoleAssignmentRepository roleAssignmentRepository) {
     this.roleAssignmentRepository = roleAssignmentRepository;
+    log = LoggerFactory.getLogger(JwtAuthenticationConverter.class);
   }
 
   @Override
@@ -41,7 +44,7 @@ public class JwtAuthenticationConverter implements Converter<Jwt, JwtAuthenticat
               .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
               .collect(Collectors.toList());
     }
-    System.out.println("AUTHORITIES ARE SET TO " + authorities);
+    log.debug("Authorities for {}: {}", subId, authorities);
     return new JwtAuthenticationToken(source, authorities);
   }
 }

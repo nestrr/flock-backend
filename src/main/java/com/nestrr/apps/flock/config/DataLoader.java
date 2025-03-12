@@ -9,6 +9,8 @@ import com.nestrr.apps.flock.standing.entity.Standing;
 import com.nestrr.apps.flock.standing.repository.StandingRepository;
 import java.time.LocalTime;
 import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -29,6 +31,7 @@ public class DataLoader implements ApplicationRunner {
   private final CampusChoiceRankRepository campusChoiceRankRepository;
   private final CampusRepository campusRepository;
   private final TimeslotRepository timeslotRepository;
+  private final Logger log;
 
   public DataLoader(
       PersonRepository personRepository,
@@ -49,6 +52,7 @@ public class DataLoader implements ApplicationRunner {
     this.campusChoiceRankRepository = campusChoiceRankRepository;
     this.campusRepository = campusRepository;
     this.timeslotRepository = timeslotRepository;
+    this.log = LoggerFactory.getLogger(DataLoader.class);
   }
 
   public void createTimeslots(String personId) {
@@ -125,13 +129,13 @@ public class DataLoader implements ApplicationRunner {
   }
 
   public void run(ApplicationArguments args) {
-    System.out.println("DataLoader: Filling in details.");
+    log.debug("DataLoader: Filling in details.");
     List<Standing> standings = standingRepository.findAll();
     List<DegreeView> degrees = degreeViewRepository.findAll(Sort.unsorted());
     List<Campus> campuses = campusRepository.findAll();
     List<Role> roles = roleRepository.findAll(Sort.unsorted());
     List<Person> persons = personRepository.findAll();
     persons.parallelStream().forEach(p -> fillDetails(p, standings, degrees, campuses, roles));
-    System.out.println("DataLoader: Filling details complete.");
+    log.debug("DataLoader: Filling details complete.");
   }
 }

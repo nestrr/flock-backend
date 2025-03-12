@@ -6,10 +6,13 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.nestrr.apps.flock.profile.dto.DegreeDto;
 import com.nestrr.apps.flock.profile.mapper.DegreeViewMapper;
 import jakarta.persistence.AttributeConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DegreeDtoAttributeConverter implements AttributeConverter<DegreeDto, String> {
+  private final Logger log;
   // not using default mapper to avoid changing its naming settings
   private final ObjectMapper objectMapper =
       new ObjectMapper().setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
@@ -18,6 +21,7 @@ public class DegreeDtoAttributeConverter implements AttributeConverter<DegreeDto
   public DegreeDtoAttributeConverter(DegreeViewMapper degreeViewMapper) {
     super();
     this.degreeViewMapper = degreeViewMapper;
+    log = LoggerFactory.getLogger(DegreeDtoAttributeConverter.class);
   }
 
   @Override
@@ -25,7 +29,7 @@ public class DegreeDtoAttributeConverter implements AttributeConverter<DegreeDto
     try {
       return objectMapper.writeValueAsString(degreeViewMapper.viewFromDegreeDto(degreeDto));
     } catch (JsonProcessingException jpe) {
-      System.out.println("Cannot convert DegreeDto into JSON");
+      log.error("Cannot convert DegreeDto into JSON");
       return null;
     }
   }
@@ -36,7 +40,7 @@ public class DegreeDtoAttributeConverter implements AttributeConverter<DegreeDto
     try {
       return objectMapper.readValue(value, DegreeDto.class);
     } catch (JsonProcessingException e) {
-      System.out.println("Cannot convert JSON into DegreeDto");
+      log.error("Cannot convert JSON into DegreeDto");
       return null;
     }
   }

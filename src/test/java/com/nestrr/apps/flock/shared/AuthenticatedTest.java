@@ -15,6 +15,8 @@ import java.time.Duration;
 import java.util.Base64;
 import lombok.Getter;
 import org.junit.jupiter.api.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.JdbcConnectionDetails;
@@ -44,7 +46,7 @@ public abstract class AuthenticatedTest implements AbstractIntegrationTest {
   @Autowired private RoleRepository roleRepository;
   @Autowired private RoleAssignmentRepository roleAssignmentRepository;
   @Autowired private ObjectMapper mapper;
-
+  private final Logger log = LoggerFactory.getLogger(AuthenticatedTest.class);
   private final OidcProfileRequest oidcProfileRequest =
       OidcProfileRequest.builder().name("Test").email("test@gmail.com").image("image").build();
 
@@ -88,8 +90,7 @@ public abstract class AuthenticatedTest implements AbstractIntegrationTest {
   }
 
   public void setBearerToken(String email, String password) {
-    System.out.println(
-        "============++++++SIMULATING OAUTH2.0, AUTHORIZATION CODE FLOW++++++============");
+    log.debug("============++++++SIMULATING OAUTH2.0, AUTHORIZATION CODE FLOW++++++============");
     this.bearerToken = fetchBearerToken(fetchAuthorizationCode(email, password));
   }
 

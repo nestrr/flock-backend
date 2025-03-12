@@ -80,4 +80,36 @@ class GroupControllerTest extends AuthenticatedTest {
         groupInviteRepository.findByIdGroupId(groupsCreated.getFirst().getId());
     Assertions.assertEquals(members.size(), groupInvitesCreated.size());
   }
+
+  @Test
+  @Disabled(value = "Need to set up alternate sender email config for tests to use.")
+  void canDeleteGroup() {
+    NewGroupRequest request =
+        new NewGroupRequest(
+            List.of(), "Test group for group deletion", "Test description", "Test image");
+    given()
+        .port(getPort())
+        .contentType(ContentType.JSON)
+        .header("Authorization", "Bearer " + getBearerToken())
+        .when()
+        .body(request)
+        .post("/group")
+        .then()
+        .statusCode(HttpStatus.OK.value());
+
+    Group group =
+        groupRepository.findByAdminId(getUserId()).stream()
+            .filter(g -> g.getName().equals(request.name()))
+            .toList()
+            .getFirst();
+    given()
+        .port(getPort())
+        .header("Authorization", "Bearer " + getBearerToken())
+        .when()
+        .body(request)
+        .delete(String.format("/group/%s", group.getId()))
+        .then()
+        .statusCode(HttpStatus.NO_CONTENT.value());
+    Assertions.assertTrue(groupRepository.findById(group.getId()).isEmpty());
+  }
 }
