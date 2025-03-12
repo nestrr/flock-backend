@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="${pageTitle}">Group Invite Template Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+<h1>Hey again! 👋🐦</h1>
+
+<p>The <a href="${groupUrl}" target="_blank"><span style="font-weight:bold;"
+                                                   th:text="${groupName}"></span></a> group has shut down. This may come
+    as a shock, but rest assured that there will be many more opportunities to connect down the line.</p>
+<br/>
+<p>Flock is here for you! <a href="${mainUrl}" target="_blank">Visit us</a> to make a new group anytime.</p>
+
+<br/>
+<p>Till next time,</p>
+<p>The Nestrr team</p>
+<!-- ... -->
+</body>
+
+</html>

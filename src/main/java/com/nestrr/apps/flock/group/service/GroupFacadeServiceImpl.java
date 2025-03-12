@@ -47,7 +47,12 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
   }
 
   @Override
-  public Group updateGroup(String groupId, UpdateGroupRequest updateGroupRequest) {
-    return groupService.updateGroup(groupId, updateGroupRequest);
+  public void updateGroup(String groupId, UpdateGroupRequest updateGroupRequest) {
+    groupService.updateGroup(groupId, updateGroupRequest);
+  }
+
+  @Override
+  public void deleteGroup(String groupId) {
+    groupService.deleteGroup(groupId);
   }
 }
