@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="${pageTitle}">Group Invite Template Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+<h1>Hey again! 👋🐦</h1>
+
+<p>You're no longer an admin of <a href="${groupUrl}" target="_blank"><span style="font-weight:bold;"
+                                                                            th:text="${groupName}"></span></a>. That
+    responsibility now
+    rests with
+    <span style="font-weight:bold;" th:text="${newAdminName}"></span>.</p>
+<br/>
+<p>What to do now? Sit back and enjoy the bliss of fewer responsibilities!</p>
+
+<br/>
+<p>Cheers,</p>
+<p>The Nestrr team</p>
+<!-- ... -->
+</body>
+
+</html>
