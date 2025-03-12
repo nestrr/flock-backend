@@ -7,11 +7,8 @@ import com.nestrr.apps.flock.group.dto.NewGroupRequest;
 import com.nestrr.apps.flock.group.dto.UpdateGroupRequest;
 import com.nestrr.apps.flock.group.entity.Group;
 import com.nestrr.apps.flock.group.entity.GroupStatus;
-import com.nestrr.apps.flock.group.repository.GroupMembershipRepository;
 import com.nestrr.apps.flock.group.repository.GroupRepository;
 import com.nestrr.apps.flock.group.repository.GroupStatusRepository;
-import com.nestrr.apps.flock.messaging.service.MessagingService;
-import com.nestrr.apps.flock.profile.repository.PersonRepository;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
@@ -72,7 +69,7 @@ public class GroupServiceImpl implements GroupService {
   }
 
   @Override
-  public Boolean isGroupOwner(String groupId, String personId) {
+  public Boolean isGroupAdmin(String groupId, String personId) {
     Group group =
         groupRepository
             .findById(groupId)

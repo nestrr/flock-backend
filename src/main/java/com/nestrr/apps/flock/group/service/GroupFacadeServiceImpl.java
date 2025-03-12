@@ -10,10 +10,7 @@ import com.nestrr.apps.flock.group.entity.Group;
 import com.nestrr.apps.flock.group.entity.GroupInvite;
 import com.nestrr.apps.flock.group.entity.GroupMembership;
 import com.nestrr.apps.flock.group.entity.id.GroupMembershipId;
-import com.nestrr.apps.flock.messaging.dto.AdminChangeContext;
-import com.nestrr.apps.flock.messaging.dto.GroupDeleteContext;
-import com.nestrr.apps.flock.messaging.dto.GroupInviteContext;
-import com.nestrr.apps.flock.messaging.dto.NewGroupMembershipContext;
+import com.nestrr.apps.flock.messaging.dto.*;
 import com.nestrr.apps.flock.messaging.service.MessagingService;
 import com.nestrr.apps.flock.profile.entity.Person;
 import com.nestrr.apps.flock.profile.service.PersonService;
@@ -63,6 +60,22 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
 
   @Override
   @Transactional
+  public void removeMember(String groupId, String memberId) {
+    if (groupService.isGroupAdmin(groupId, memberId))
+      throw new IllegalArgumentException(
+          String.format(
+              "Member ID %s is attempting to leave group ID %s while being the only admin.",
+              memberId, groupId));
+    groupMembershipService.removeMember(groupId, memberId);
+    Group group = groupService.getGroup(groupId);
+    Person member = personService.getPerson(memberId);
+    DeletedGroupMembershipContext context =
+        DeletedGroupMembershipContext.builder().group(group).member(member).build();
+    messagingService.sendGroupMemberGoodbyeNotification(context);
+  }
+
+  @Override
+  @Transactional
   public void respondToInvite(
       Authentication auth, String groupId, String memberId, String statusId) {
     GroupInviteStatuses status = groupInviteService.acceptInvite(groupId, memberId, statusId);
@@ -81,12 +94,6 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
   public List<GroupDto> getSelfGroups(Authentication auth) {
     String personId = getJwtId(auth);
     return groupMembershipService.getGroupsByPersonId(personId);
-  }
-
-  @Override
-  @Transactional
-  public Boolean isGroupOwner(String groupId, String personId) {
-    return groupService.isGroupOwner(groupId, personId);
   }
 
   @Override

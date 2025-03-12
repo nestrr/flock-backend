@@ -11,13 +11,13 @@ public interface GroupFacadeService {
 
   List<GroupDto> getSelfGroups(Authentication auth);
 
-  Boolean isGroupOwner(String groupId, String personId);
-
   void updateGroup(String groupId, UpdateGroupRequest updateGroupRequest);
 
   void deleteGroup(String groupId);
 
   void inviteUsers(Authentication auth, String groupId, List<String> memberIds);
+
+  void removeMember(String groupId, String memberId);
 
   void respondToInvite(Authentication auth, String groupId, String memberId, String statusId);
 }

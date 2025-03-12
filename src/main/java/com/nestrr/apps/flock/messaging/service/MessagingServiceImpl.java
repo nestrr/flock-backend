@@ -1,9 +1,6 @@
 package com.nestrr.apps.flock.messaging.service;
 
-import com.nestrr.apps.flock.messaging.dto.AdminChangeContext;
-import com.nestrr.apps.flock.messaging.dto.GroupDeleteContext;
-import com.nestrr.apps.flock.messaging.dto.GroupInviteContext;
-import com.nestrr.apps.flock.messaging.dto.NewGroupMembershipContext;
+import com.nestrr.apps.flock.messaging.dto.*;
 import com.nestrr.apps.flock.messaging.entity.Email;
 import com.nestrr.apps.flock.profile.entity.Person;
 import com.nestrr.apps.flock.profile.repository.PersonRepository;
@@ -83,6 +80,9 @@ public class MessagingServiceImpl implements MessagingService {
     emailService.sendSystemEmail(email);
   }
 
+  @Override
+  public void sendGroupMemberGoodbyeNotification(DeletedGroupMembershipContext context) {}
+
   public Email createInviteEmail(
       GroupInviteContext context, String recipientId, String recipientEmail) {
     String subject =
@@ -149,6 +149,19 @@ public class MessagingServiceImpl implements MessagingService {
     ctx.setVariable("mainUrl", frontend);
 
     String content = emailTemplateEngine.process("group-welcome/template.html", ctx);
+    return Email.builder().subject(subject).htmlBody(content).recipient(recipientEmail).build();
+  }
+
+  public Email createGoodbyeEmail(DeletedGroupMembershipContext context, String recipientEmail) {
+    String subject =
+        String.format("Important: you have left the %s group.", context.group().getName());
+    Context ctx = new Context(Locale.US);
+    ctx.setVariable("pageTitle", subject);
+    ctx.setVariable("groupName", context.group().getName());
+    ctx.setVariable("groupUrl", String.format("%s/group/%s", frontend, context.group().getId()));
+    ctx.setVariable("mainUrl", frontend);
+
+    String content = emailTemplateEngine.process("group-goodbye/template.html", ctx);
     return Email.builder().subject(subject).htmlBody(content).recipient(recipientEmail).build();
   }
 }

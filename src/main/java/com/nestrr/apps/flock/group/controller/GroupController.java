@@ -43,9 +43,23 @@ public class GroupController {
   }
 
   @DeleteMapping("/{groupId}")
-  @PreAuthorize("@groupFacadeServiceImpl.isGroupOwner(#groupId, authentication.name)")
+  @PreAuthorize("@groupServiceImpl.isGroupAdmin(#groupId, authentication.name)")
   public ResponseEntity<String> deleteGroup(@PathVariable String groupId) {
     groupFacadeService.deleteGroup(groupId);
     return ResponseEntity.noContent().build();
+  }
+
+  @DeleteMapping("/{groupId}/{memberId}")
+  @PreAuthorize(
+      "#memberId == authentication.name || @groupFacadeServiceImpl.isGroupOwner(#groupId, authentication.name)")
+  public ResponseEntity<String> removeMember(
+      @PathVariable String groupId, @PathVariable String memberId) {
+    try {
+      groupFacadeService.removeMember(groupId, memberId);
+      return ResponseEntity.noContent().build();
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest()
+          .body("An admin cannot leave the group. Assign another admin first.");
+    }
   }
 }

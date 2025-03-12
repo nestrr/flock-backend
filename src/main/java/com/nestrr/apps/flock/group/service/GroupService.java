@@ -13,7 +13,7 @@ public interface GroupService {
 
   Group updateGroup(String groupId, UpdateGroupRequest updateGroupRequest);
 
-  Boolean isGroupOwner(String groupId, String personId);
+  Boolean isGroupAdmin(String groupId, String personId);
 
   void deleteGroup(String groupId);
 
