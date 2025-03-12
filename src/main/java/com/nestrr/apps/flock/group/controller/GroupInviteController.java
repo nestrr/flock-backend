@@ -30,6 +30,23 @@ public class GroupInviteController {
     }
   }
 
+  @PatchMapping("/{groupId}/member/{memberId}")
+  @PreAuthorize("#memberId == authentication.name")
+  public ResponseEntity<String> respondToInvite(
+      Authentication auth,
+      @PathVariable String groupId,
+      @PathVariable String memberId,
+      @RequestParam String statusId) {
+    try {
+      groupFacadeService.respondToInvite(auth, groupId, memberId, statusId);
+      return ResponseEntity.ok().build();
+    } catch (NoSuchElementException e) {
+      return ResponseEntity.notFound().build();
+    } catch (IllegalArgumentException e) {
+      return ResponseEntity.badRequest().build();
+    }
+  }
+
   @PostMapping("/{groupId}/member")
   @PreAuthorize("@groupMembershipServiceImpl.isGroupMember(#groupId, authentication.name)")
   public ResponseEntity<String> createInvites(

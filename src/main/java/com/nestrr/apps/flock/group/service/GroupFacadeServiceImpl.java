@@ -46,6 +46,17 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
   }
 
   @Override
+  @Transactional
+  public void respondToInvite(
+      Authentication auth, String groupId, String memberId, String statusId) {
+    GroupInviteStatuses status = groupInviteService.acceptInvite(groupId, memberId, statusId);
+    if (status.equals(GroupInviteStatuses.ACCEPTED)) {
+      groupMembershipService.addMember(groupId, memberId);
+    }
+  }
+
+  @Override
+  @Transactional
   public List<GroupDto> getSelfGroups(Authentication auth) {
     String personId = getJwtId(auth);
     return groupMembershipService.getGroupsByPersonId(personId);
