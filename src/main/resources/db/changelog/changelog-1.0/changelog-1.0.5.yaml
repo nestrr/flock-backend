@@ -1,0 +1,56 @@
+databaseChangeLog:
+  - changeSet:
+      # Create the email table
+      id: 202503101250
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createTable:
+            tableName: email
+            columns:
+              - column:
+                  name: id
+                  type: text
+                  defaultValueComputed: gen_random_uuid()::text
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: pk_email
+                    nullable: false
+              - column:
+                  name: version
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: sender
+                  type: text
+              - column:
+                  name: recipient
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: timestamp
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: subject
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: html_body
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: text_body
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: success
+                  type: boolean
+                  constraints:
+                    nullable: false

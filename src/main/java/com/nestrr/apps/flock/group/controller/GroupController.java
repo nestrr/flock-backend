@@ -33,22 +33,18 @@ public class GroupController {
     return ResponseEntity.ok().build();
   }
 
-  @PatchMapping("/{id}")
-  @PreAuthorize("isGroupOwner(#groupId, authentication.name)")
+  @PatchMapping("/{groupId}")
+  @PreAuthorize("@groupFacadeServiceImpl.isGroupOwner(#groupId, authentication.name)")
   public ResponseEntity<String> updateGroup(
       @PathVariable String groupId, @Valid @RequestBody UpdateGroupRequest updateGroupRequest) {
     groupFacadeService.updateGroup(groupId, updateGroupRequest);
     return ResponseEntity.noContent().build();
   }
 
-  @DeleteMapping("/{id}")
-  @PreAuthorize("isGroupOwner(#groupId, authentication.name)")
+  @DeleteMapping("/{groupId}")
+  @PreAuthorize("@groupFacadeServiceImpl.isGroupOwner(#groupId, authentication.name)")
   public ResponseEntity<String> deleteGroup(@PathVariable String groupId) {
     groupFacadeService.deleteGroup(groupId);
     return ResponseEntity.noContent().build();
-  }
-
-  public boolean isGroupOwner(String groupId, String personId) {
-    return groupFacadeService.isGroupOwner(groupId, personId);
   }
 }

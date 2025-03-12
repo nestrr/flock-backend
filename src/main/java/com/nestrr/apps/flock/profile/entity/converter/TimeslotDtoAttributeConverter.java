@@ -10,6 +10,8 @@ import com.nestrr.apps.flock.profile.entity.TimeslotView;
 import com.nestrr.apps.flock.profile.mapper.TimeslotMapper;
 import jakarta.persistence.AttributeConverter;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -21,10 +23,12 @@ public class TimeslotDtoAttributeConverter
           .setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE)
           .registerModule(new JavaTimeModule());
   private final TimeslotMapper timeslotMapper;
+  private final Logger log;
 
   public TimeslotDtoAttributeConverter(TimeslotMapper timeslotMapper) {
     super();
     this.timeslotMapper = timeslotMapper;
+    this.log = LoggerFactory.getLogger(TimeslotDtoAttributeConverter.class);
   }
 
   @Override
@@ -33,7 +37,7 @@ public class TimeslotDtoAttributeConverter
       return objectMapper.writeValueAsString(
           timeslotDtos.stream().map(timeslotMapper::viewFromTimeslotDto).toList());
     } catch (JsonProcessingException jpe) {
-      System.out.println("Cannot convert TimeslotDto list into JSON");
+      log.error("Cannot convert TimeslotDto list into JSON");
       return null;
     }
   }
@@ -46,7 +50,7 @@ public class TimeslotDtoAttributeConverter
           objectMapper.readValue(value, new TypeReference<List<TimeslotView>>() {});
       return timeslotViewObjects.stream().map(timeslotMapper::toTimeslotDto).toList();
     } catch (JsonProcessingException e) {
-      System.out.println("Cannot convert JSON into TimeslotDto list");
+      log.error("Cannot convert JSON into TimeslotDto list");
       return null;
     }
   }
