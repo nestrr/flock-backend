@@ -87,7 +87,7 @@ public class MessagingServiceImpl implements MessagingService {
     ctx.setVariable("newAdminName", context.newAdmin().getName());
     ctx.setVariable("newAdminId", context.newAdmin().getId());
 
-    String content = emailTemplateEngine.process("admin-removal/template.html", ctx);
+    String content = emailTemplateEngine.process("group-admin-removal/template.html", ctx);
     return Email.builder()
         .subject(subject)
         .htmlBody(content)
@@ -105,7 +105,7 @@ public class MessagingServiceImpl implements MessagingService {
     ctx.setVariable("oldAdminId", context.oldAdmin().getId());
     ctx.setVariable("oldAdminName", context.oldAdmin().getName());
 
-    String content = emailTemplateEngine.process("admin-assignment/template.html", ctx);
+    String content = emailTemplateEngine.process("group-admin-assignment/template.html", ctx);
     return Email.builder()
         .subject(subject)
         .htmlBody(content)
