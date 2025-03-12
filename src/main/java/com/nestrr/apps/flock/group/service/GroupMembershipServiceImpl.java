@@ -44,4 +44,9 @@ public class GroupMembershipServiceImpl implements GroupMembershipService {
         .map(groupMapper::toGroupDto)
         .toList();
   }
+
+  @Override
+  public List<GroupMembership> getMembershipsByGroupId(String groupId) {
+    return groupMembershipRepository.findByIdGroupId(groupId).stream().toList();
+  }
 }

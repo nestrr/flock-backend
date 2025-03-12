@@ -6,6 +6,8 @@ import com.nestrr.apps.flock.profile.entity.Person;
 import com.nestrr.apps.flock.profile.repository.PersonRepository;
 import java.sql.SQLDataException;
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,8 +31,11 @@ public class PersonServiceImpl implements PersonService {
   }
 
   @Override
-  public Person getPerson(String id) throws SQLDataException {
-    return personRepository.findById(id).orElseThrow(() -> new SQLDataException("No such person!"));
+  public Person getPerson(String id) throws NoSuchElementException {
+    return personRepository
+        .findById(id)
+        .orElseThrow(
+            () -> new NoSuchElementException(String.format("No such person with id %s", id)));
   }
 
   @Override

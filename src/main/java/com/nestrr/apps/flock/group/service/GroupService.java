@@ -11,7 +11,7 @@ public interface GroupService {
 
   Group createGroup(String creatorId, NewGroupRequest newGroupRequest);
 
-  void updateGroup(String groupId, UpdateGroupRequest updateGroupRequest);
+  Group updateGroup(String groupId, UpdateGroupRequest updateGroupRequest);
 
   Boolean isGroupOwner(String groupId, String personId);
 

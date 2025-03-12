@@ -58,6 +58,7 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
     if (memberIds.size() == 1 && memberIds.getFirst().equals(getJwtId(auth))) return;
     Group group = groupService.findGroupById(groupId).orElseThrow(NoSuchElementException::new);
     groupInviteService.createInvites(group, memberIds);
+    sendInvites(group, memberIds);
   }
 
   @Override
@@ -91,6 +92,19 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
   @Override
   @Transactional
   public void updateGroup(String groupId, UpdateGroupRequest updateGroupRequest) {
+    if (updateGroupRequest.adminId() != null) {
+      Group oldGroup = groupService.getGroup(groupId);
+      Person oldAdmin = personService.getPerson(oldGroup.getAdminId());
+      Person newAdmin = personService.getPerson(updateGroupRequest.adminId());
+      AdminChangeContext context =
+          AdminChangeContext.builder()
+              .group(oldGroup)
+              .oldAdmin(oldAdmin)
+              .newAdmin(newAdmin)
+              .build(); // Use old details of group in change context, so that emails refer to the
+      // well-known details of the group
+      messagingService.sendAdminChangeNotification(context);
+    }
     groupService.updateGroup(groupId, updateGroupRequest);
   }
 
@@ -102,6 +116,21 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
     if (!pendingInvites.isEmpty()) {
       groupInviteService.deleteByGroupId(groupId);
     }
+    Group group = groupService.getGroup(groupId);
+    List<String> memberIds =
+        groupMembershipService.getMembershipsByGroupId(groupId).stream()
+            .map(GroupMembership::getId)
+            .map(GroupMembershipId::personId)
+            .toList();
+    messagingService.sendGroupDeleteNotification(
+        GroupDeleteContext.builder().group(group).memberIds(memberIds).build());
     groupService.deleteGroup(groupId);
+  }
+
+  private void sendInvites(Group group, List<String> recipientIds) throws NoSuchElementException {
+    Person admin = personService.getPerson(group.getAdminId());
+
+    GroupInviteContext context = GroupInviteContext.builder().group(group).admin(admin).build();
+    messagingService.sendInviteNotification(context, recipientIds);
   }
 }
