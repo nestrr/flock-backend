@@ -5,7 +5,7 @@ public enum GroupInviteStatuses {
   REJECTED("rejected"),
   RESPONSE_PENDING("response_pending"),
   EXPIRED("expired");
-  public final String value;
+  private final String value;
 
   GroupInviteStatuses(String value) {
     this.value = value;

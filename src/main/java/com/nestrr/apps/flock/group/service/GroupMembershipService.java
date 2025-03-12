@@ -6,6 +6,8 @@ import java.util.List;
 public interface GroupMembershipService {
   void addMember(String groupId, String personId);
 
+  boolean isGroupMember(String groupId, String personId);
+
   void removeMember(String groupId, String personId);
 
   List<GroupDto> getGroupsByPersonId(String personId);
