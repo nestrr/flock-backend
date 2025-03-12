@@ -6,13 +6,18 @@ import com.nestrr.apps.flock.group.constants.GroupStatuses;
 import com.nestrr.apps.flock.group.dto.NewGroupRequest;
 import com.nestrr.apps.flock.group.dto.UpdateGroupRequest;
 import com.nestrr.apps.flock.group.entity.Group;
+import com.nestrr.apps.flock.group.entity.GroupMembership;
 import com.nestrr.apps.flock.group.entity.GroupStatus;
+import com.nestrr.apps.flock.group.entity.id.GroupMembershipId;
+import com.nestrr.apps.flock.group.repository.GroupMembershipRepository;
 import com.nestrr.apps.flock.group.repository.GroupRepository;
 import com.nestrr.apps.flock.group.repository.GroupStatusRepository;
 import com.nestrr.apps.flock.messaging.dto.AdminChangeContext;
+import com.nestrr.apps.flock.messaging.dto.GroupDeleteContext;
 import com.nestrr.apps.flock.messaging.service.MessagingService;
 import com.nestrr.apps.flock.profile.entity.Person;
 import com.nestrr.apps.flock.profile.repository.PersonRepository;
+import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,16 +25,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class GroupServiceImpl implements GroupService {
   private final GroupRepository groupRepository;
+  private final GroupMembershipRepository groupMembershipRepository;
   private final GroupStatusRepository groupStatusRepository;
   private final MessagingService messagingService;
   private final PersonRepository personRepository;
 
   public GroupServiceImpl(
       GroupRepository groupRepository,
+      GroupMembershipRepository groupMembershipRepository,
       GroupStatusRepository groupStatusRepository,
       MessagingService messagingService,
       PersonRepository personRepository) {
     this.groupRepository = groupRepository;
+    this.groupMembershipRepository = groupMembershipRepository;
     this.groupStatusRepository = groupStatusRepository;
     this.messagingService = messagingService;
     this.personRepository = personRepository;
@@ -95,5 +103,22 @@ public class GroupServiceImpl implements GroupService {
             .findById(groupId)
             .orElseThrow(() -> new NoSuchElementException("Group does not exist."));
     return group.getAdminId().equals(personId);
+  }
+
+  @Override
+  public void deleteGroup(String groupId) {
+    Group group =
+        groupRepository
+            .findById(groupId)
+            .orElseThrow(() -> new NoSuchElementException("Group does not exist."));
+    // TODO: find a better way. Group deletion should not include messaging group members.
+    List<String> memberIds =
+        groupMembershipRepository.findByIdGroupId(groupId).stream()
+            .map(GroupMembership::getId)
+            .map(GroupMembershipId::personId)
+            .toList();
+    messagingService.sendGroupDeleteNotification(
+        GroupDeleteContext.builder().group(group).memberIds(memberIds).build());
+    groupRepository.deleteById(groupId);
   }
 }

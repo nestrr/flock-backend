@@ -1,6 +1,7 @@
 package com.nestrr.apps.flock.messaging.service;
 
 import com.nestrr.apps.flock.messaging.dto.AdminChangeContext;
+import com.nestrr.apps.flock.messaging.dto.GroupDeleteContext;
 import com.nestrr.apps.flock.messaging.dto.GroupInviteContext;
 import com.nestrr.apps.flock.messaging.entity.Email;
 import com.nestrr.apps.flock.profile.entity.Person;
@@ -53,6 +54,24 @@ public class MessagingServiceImpl implements MessagingService {
     Email assignmentEmail = createAdminAssignmentEmail(context, context.newAdmin().getEmail());
     emailService.sendSystemEmail(removalEmail);
     emailService.sendSystemEmail(assignmentEmail);
+  }
+
+  @Override
+  public void sendGroupDeleteNotification(GroupDeleteContext context) {
+    List<String> memberEmails =
+        context.memberIds().stream()
+            .map(
+                id ->
+                    personRepository
+                        .findById(id)
+                        .map(Person::getEmail)
+                        .orElseThrow(
+                            () ->
+                                new NullPointerException(
+                                    String.format("Person with ID %s does not have an email", id))))
+            .toList();
+    Email email = createGroupDeletionEmail(context, memberEmails);
+    emailService.sendSystemEmail(email);
   }
 
   public Email createInviteEmail(
@@ -111,5 +130,16 @@ public class MessagingServiceImpl implements MessagingService {
         .htmlBody(content)
         .recipients(List.of(recipientEmail))
         .build();
+  }
+
+  public Email createGroupDeletionEmail(GroupDeleteContext context, List<String> recipientEmails) {
+    String subject = String.format("Important: %s has shut down.", context.group().getName());
+    Context ctx = new Context(Locale.US);
+    ctx.setVariable("pageTitle", subject);
+    ctx.setVariable("groupName", context.group().getName());
+    ctx.setVariable("mainUrl", frontend);
+
+    String content = emailTemplateEngine.process("group-deletion/template.html", ctx);
+    return Email.builder().subject(subject).htmlBody(content).recipients(recipientEmails).build();
   }
 }

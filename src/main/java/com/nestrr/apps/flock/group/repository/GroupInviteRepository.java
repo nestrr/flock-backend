@@ -14,4 +14,6 @@ public interface GroupInviteRepository
         JpaRepository<GroupInvite, GroupInviteId> {
 
   List<GroupInvite> findByIdGroupId(String groupId);
+
+  void deleteByIdGroupId(String groupId);
 }

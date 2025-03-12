@@ -41,6 +41,13 @@ public class GroupController {
     return ResponseEntity.noContent().build();
   }
 
+  @DeleteMapping("/{id}")
+  @PreAuthorize("isGroupOwner(#groupId, authentication.name)")
+  public ResponseEntity<String> deleteGroup(@PathVariable String groupId) {
+    groupFacadeService.deleteGroup(groupId);
+    return ResponseEntity.noContent().build();
+  }
+
   public boolean isGroupOwner(String groupId, String personId) {
     return groupFacadeService.isGroupOwner(groupId, personId);
   }
