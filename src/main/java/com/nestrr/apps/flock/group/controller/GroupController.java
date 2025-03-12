@@ -23,7 +23,8 @@ public class GroupController {
 
   @GetMapping("/me")
   public ResponseEntity<List<GroupDto>> getSelfGroups(Authentication auth) {
-    return ResponseEntity.ok(groupFacadeService.getSelfGroups(auth));
+    var x = ResponseEntity.ok(groupFacadeService.getSelfGroups(auth));
+    return x;
   }
 
   @PostMapping

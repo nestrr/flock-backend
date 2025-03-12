@@ -28,6 +28,11 @@ public class GroupMembershipServiceImpl implements GroupMembershipService {
   }
 
   @Override
+  public boolean isGroupMember(String groupId, String personId) {
+    return groupMembershipRepository.findById(new GroupMembershipId(groupId, personId)).isPresent();
+  }
+
+  @Override
   @Transactional
   public void removeMember(String groupId, String personId) {
     groupMembershipRepository.deleteById(new GroupMembershipId(groupId, personId));
