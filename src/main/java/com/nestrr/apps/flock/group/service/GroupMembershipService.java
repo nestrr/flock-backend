@@ -1,6 +1,7 @@
 package com.nestrr.apps.flock.group.service;
 
 import com.nestrr.apps.flock.group.dto.GroupDto;
+import com.nestrr.apps.flock.group.entity.GroupMembership;
 import java.util.List;
 
 public interface GroupMembershipService {
@@ -11,4 +12,6 @@ public interface GroupMembershipService {
   void removeMember(String groupId, String personId);
 
   List<GroupDto> getGroupsByPersonId(String personId);
+
+  List<GroupMembership> getMembershipsByGroupId(String groupId);
 }

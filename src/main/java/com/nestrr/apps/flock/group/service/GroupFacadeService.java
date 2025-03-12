@@ -5,19 +5,20 @@ import com.nestrr.apps.flock.group.dto.NewGroupRequest;
 import com.nestrr.apps.flock.group.dto.UpdateGroupRequest;
 import java.util.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface GroupFacadeService {
   void createGroup(Authentication auth, NewGroupRequest newGroupRequest);
 
   List<GroupDto> getSelfGroups(Authentication auth);
 
-  Boolean isGroupOwner(String groupId, String personId);
-
   void updateGroup(String groupId, UpdateGroupRequest updateGroupRequest);
 
   void deleteGroup(String groupId);
 
   void inviteUsers(Authentication auth, String groupId, List<String> memberIds);
+
+  void removeMember(Authentication auth, String groupId, String memberId);
 
   void respondToInvite(Authentication auth, String groupId, String memberId, String statusId);
 }

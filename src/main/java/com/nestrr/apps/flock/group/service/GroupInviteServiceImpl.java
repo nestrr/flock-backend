@@ -8,9 +8,7 @@ import com.nestrr.apps.flock.group.entity.GroupInviteStatus;
 import com.nestrr.apps.flock.group.entity.id.GroupInviteId;
 import com.nestrr.apps.flock.group.repository.GroupInviteRepository;
 import com.nestrr.apps.flock.group.repository.GroupInviteStatusRepository;
-import com.nestrr.apps.flock.messaging.dto.GroupInviteContext;
 import com.nestrr.apps.flock.messaging.service.MessagingService;
-import com.nestrr.apps.flock.profile.entity.Person;
 import com.nestrr.apps.flock.profile.repository.PersonRepository;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,18 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class GroupInviteServiceImpl implements GroupInviteService {
   private final GroupInviteRepository groupInviteRepository;
   private final GroupInviteStatusRepository groupInviteStatusRepository;
-  private final PersonRepository personRepository;
-  private final MessagingService messagingService;
 
   public GroupInviteServiceImpl(
       GroupInviteRepository groupInviteRepository,
-      GroupInviteStatusRepository groupInviteStatusRepository,
-      MessagingService messagingService,
-      PersonRepository personRepository) {
+      GroupInviteStatusRepository groupInviteStatusRepository) {
     this.groupInviteRepository = groupInviteRepository;
     this.groupInviteStatusRepository = groupInviteStatusRepository;
-    this.messagingService = messagingService;
-    this.personRepository = personRepository;
   }
 
   @Transactional
@@ -51,8 +43,6 @@ public class GroupInviteServiceImpl implements GroupInviteService {
             storeInvite(group.getId(), recipientId, pendingStatusId);
           }
         });
-
-    sendInvites(group, recipientIds);
   }
 
   @Override
@@ -124,20 +114,5 @@ public class GroupInviteServiceImpl implements GroupInviteService {
                     new NoSuchElementException(
                         String.format("No status found for status ID: %s.", id)));
     return GroupInviteStatuses.valueOf(name);
-  }
-
-  private void sendInvites(Group group, List<String> recipientIds) {
-    Person admin =
-        personRepository
-            .findById(group.getAdminId())
-            .orElseThrow(
-                () ->
-                    new NoSuchElementException(
-                        String.format(
-                            "No Person object found for admin ID %s (group ID %s)",
-                            group.getAdminId(), group.getId())));
-
-    GroupInviteContext context = GroupInviteContext.builder().group(group).admin(admin).build();
-    messagingService.sendInviteNotification(context, recipientIds);
   }
 }

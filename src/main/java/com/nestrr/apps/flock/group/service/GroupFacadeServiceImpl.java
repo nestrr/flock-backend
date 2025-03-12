@@ -8,6 +8,12 @@ import com.nestrr.apps.flock.group.dto.NewGroupRequest;
 import com.nestrr.apps.flock.group.dto.UpdateGroupRequest;
 import com.nestrr.apps.flock.group.entity.Group;
 import com.nestrr.apps.flock.group.entity.GroupInvite;
+import com.nestrr.apps.flock.group.entity.GroupMembership;
+import com.nestrr.apps.flock.group.entity.id.GroupMembershipId;
+import com.nestrr.apps.flock.messaging.dto.*;
+import com.nestrr.apps.flock.messaging.service.MessagingService;
+import com.nestrr.apps.flock.profile.entity.Person;
+import com.nestrr.apps.flock.profile.service.PersonService;
 import java.util.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -18,14 +24,20 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
   private final GroupService groupService;
   private final GroupInviteService groupInviteService;
   private final GroupMembershipService groupMembershipService;
+  private final PersonService personService;
+  private final MessagingService messagingService;
 
   public GroupFacadeServiceImpl(
       GroupService groupService,
       GroupInviteService groupInviteService,
-      GroupMembershipService groupMembershipService) {
+      GroupMembershipService groupMembershipService,
+      PersonService personService,
+      MessagingService messagingService) {
     this.groupService = groupService;
     this.groupInviteService = groupInviteService;
     this.groupMembershipService = groupMembershipService;
+    this.personService = personService;
+    this.messagingService = messagingService;
   }
 
   @Override
@@ -43,6 +55,28 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
     if (memberIds.size() == 1 && memberIds.getFirst().equals(getJwtId(auth))) return;
     Group group = groupService.findGroupById(groupId).orElseThrow(NoSuchElementException::new);
     groupInviteService.createInvites(group, memberIds);
+    sendInvites(group, memberIds);
+  }
+
+  @Transactional
+  @Override
+  public void removeMember(Authentication auth, String groupId, String memberId) {
+    String removerId = getJwtId(auth);
+    if (groupService.isGroupAdmin(groupId, memberId))
+      throw new IllegalArgumentException(
+          String.format(
+              "Member ID %s is attempting to leave group ID %s while being the only admin.",
+              memberId, groupId));
+    groupMembershipService.removeMember(groupId, memberId);
+    Group group = groupService.getGroup(groupId);
+    Person member = personService.getPerson(memberId);
+    DeletedGroupMembershipContext context =
+        DeletedGroupMembershipContext.builder()
+            .group(group)
+            .member(member)
+            .removerId(removerId)
+            .build();
+    messagingService.sendGroupMemberGoodbyeNotification(context);
   }
 
   @Override
@@ -52,6 +86,11 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
     GroupInviteStatuses status = groupInviteService.acceptInvite(groupId, memberId, statusId);
     if (status.equals(GroupInviteStatuses.ACCEPTED)) {
       groupMembershipService.addMember(groupId, memberId);
+      Group group = groupService.getGroup(groupId);
+      Person member = personService.getPerson(memberId);
+      NewGroupMembershipContext context =
+          NewGroupMembershipContext.builder().group(group).member(member).build();
+      messagingService.sendGroupMemberWelcomeNotification(context);
     }
   }
 
@@ -64,13 +103,20 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
 
   @Override
   @Transactional
-  public Boolean isGroupOwner(String groupId, String personId) {
-    return groupService.isGroupOwner(groupId, personId);
-  }
-
-  @Override
-  @Transactional
   public void updateGroup(String groupId, UpdateGroupRequest updateGroupRequest) {
+    if (updateGroupRequest.adminId() != null) {
+      Group oldGroup = groupService.getGroup(groupId);
+      Person oldAdmin = personService.getPerson(oldGroup.getAdminId());
+      Person newAdmin = personService.getPerson(updateGroupRequest.adminId());
+      AdminChangeContext context =
+          AdminChangeContext.builder()
+              .group(oldGroup)
+              .oldAdmin(oldAdmin)
+              .newAdmin(newAdmin)
+              .build(); // Use old details of group in change context, so that emails refer to the
+      // well-known details of the group
+      messagingService.sendAdminChangeNotification(context);
+    }
     groupService.updateGroup(groupId, updateGroupRequest);
   }
 
@@ -82,6 +128,21 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
     if (!pendingInvites.isEmpty()) {
       groupInviteService.deleteByGroupId(groupId);
     }
+    Group group = groupService.getGroup(groupId);
+    List<String> memberIds =
+        groupMembershipService.getMembershipsByGroupId(groupId).stream()
+            .map(GroupMembership::getId)
+            .map(GroupMembershipId::personId)
+            .toList();
+    messagingService.sendGroupDeleteNotification(
+        GroupDeleteContext.builder().group(group).memberIds(memberIds).build());
     groupService.deleteGroup(groupId);
+  }
+
+  private void sendInvites(Group group, List<String> recipientIds) throws NoSuchElementException {
+    Person admin = personService.getPerson(group.getAdminId());
+
+    GroupInviteContext context = GroupInviteContext.builder().group(group).admin(admin).build();
+    messagingService.sendInviteNotification(context, recipientIds);
   }
 }

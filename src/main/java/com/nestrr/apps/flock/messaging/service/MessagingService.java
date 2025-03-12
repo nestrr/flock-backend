@@ -1,8 +1,7 @@
 package com.nestrr.apps.flock.messaging.service;
 
-import com.nestrr.apps.flock.messaging.dto.AdminChangeContext;
-import com.nestrr.apps.flock.messaging.dto.GroupDeleteContext;
-import com.nestrr.apps.flock.messaging.dto.GroupInviteContext;
+import com.nestrr.apps.flock.messaging.dto.*;
+
 import java.util.List;
 
 public interface MessagingService {
@@ -12,4 +11,8 @@ public interface MessagingService {
   void sendAdminChangeNotification(AdminChangeContext context);
 
   void sendGroupDeleteNotification(GroupDeleteContext context);
+
+  void sendGroupMemberWelcomeNotification(NewGroupMembershipContext context);
+
+  void sendGroupMemberGoodbyeNotification(DeletedGroupMembershipContext context);
 }
