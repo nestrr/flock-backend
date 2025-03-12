@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title th:text="${pageTitle}">Group Invite Template Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+
+<body>
+<h1>Hey again! 👋🐦</h1>
+
+<p>Looks like you've got more company! We're sure you'll have a
+    great time. This email is to confirm that you have officially joined the crew at <a href="${groupUrl}"
+                                                                                        target="_blank"><span
+            style="font-weight:bold;"
+            th:text="${groupName}"></span></a>.</p>
+<br/>
+<p>Want to make a group of your own? <a href="${mainUrl}" target="_blank">Visit us</a> to make a new group anytime.</p>
+
+<br/>
+<p>Till next time,</p>
+<p>The Nestrr team</p>
+<!-- ... -->
+</body>
+
+</html>

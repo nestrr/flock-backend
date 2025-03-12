@@ -126,4 +126,12 @@ public class GroupServiceImpl implements GroupService {
         GroupDeleteContext.builder().group(group).memberIds(memberIds).build());
     groupRepository.deleteById(groupId);
   }
+
+  @Override
+  public Group getGroup(String groupId) throws NoSuchElementException {
+    return groupRepository
+        .findById(groupId)
+        .orElseThrow(
+            () -> new NoSuchElementException(String.format("No group with group ID %s", groupId)));
+  }
 }

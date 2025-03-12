@@ -3,6 +3,7 @@ package com.nestrr.apps.flock.messaging.service;
 import com.nestrr.apps.flock.messaging.dto.AdminChangeContext;
 import com.nestrr.apps.flock.messaging.dto.GroupDeleteContext;
 import com.nestrr.apps.flock.messaging.dto.GroupInviteContext;
+import com.nestrr.apps.flock.messaging.dto.NewGroupMembershipContext;
 import com.nestrr.apps.flock.messaging.entity.Email;
 import com.nestrr.apps.flock.profile.entity.Person;
 import com.nestrr.apps.flock.profile.repository.PersonRepository;
@@ -76,6 +77,12 @@ public class MessagingServiceImpl implements MessagingService {
         });
   }
 
+  @Override
+  public void sendGroupMemberWelcomeNotification(NewGroupMembershipContext context) {
+    Email email = createWelcomeEmail(context, context.member().getEmail());
+    emailService.sendSystemEmail(email);
+  }
+
   public Email createInviteEmail(
       GroupInviteContext context, String recipientId, String recipientEmail) {
     String subject =
@@ -130,6 +137,18 @@ public class MessagingServiceImpl implements MessagingService {
     ctx.setVariable("mainUrl", frontend);
 
     String content = emailTemplateEngine.process("group-deletion/template.html", ctx);
+    return Email.builder().subject(subject).htmlBody(content).recipient(recipientEmail).build();
+  }
+
+  public Email createWelcomeEmail(NewGroupMembershipContext context, String recipientEmail) {
+    String subject = String.format("Welcome to %s!", context.group().getName());
+    Context ctx = new Context(Locale.US);
+    ctx.setVariable("pageTitle", subject);
+    ctx.setVariable("groupName", context.group().getName());
+    ctx.setVariable("groupUrl", String.format("%s/group/%s", frontend, context.group().getId()));
+    ctx.setVariable("mainUrl", frontend);
+
+    String content = emailTemplateEngine.process("group-welcome/template.html", ctx);
     return Email.builder().subject(subject).htmlBody(content).recipient(recipientEmail).build();
   }
 }

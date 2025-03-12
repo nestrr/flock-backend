@@ -8,6 +8,15 @@ import com.nestrr.apps.flock.group.dto.NewGroupRequest;
 import com.nestrr.apps.flock.group.dto.UpdateGroupRequest;
 import com.nestrr.apps.flock.group.entity.Group;
 import com.nestrr.apps.flock.group.entity.GroupInvite;
+import com.nestrr.apps.flock.group.entity.GroupMembership;
+import com.nestrr.apps.flock.group.entity.id.GroupMembershipId;
+import com.nestrr.apps.flock.messaging.dto.AdminChangeContext;
+import com.nestrr.apps.flock.messaging.dto.GroupDeleteContext;
+import com.nestrr.apps.flock.messaging.dto.GroupInviteContext;
+import com.nestrr.apps.flock.messaging.dto.NewGroupMembershipContext;
+import com.nestrr.apps.flock.messaging.service.MessagingService;
+import com.nestrr.apps.flock.profile.entity.Person;
+import com.nestrr.apps.flock.profile.service.PersonService;
 import java.util.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
@@ -18,14 +27,20 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
   private final GroupService groupService;
   private final GroupInviteService groupInviteService;
   private final GroupMembershipService groupMembershipService;
+  private final PersonService personService;
+  private final MessagingService messagingService;
 
   public GroupFacadeServiceImpl(
       GroupService groupService,
       GroupInviteService groupInviteService,
-      GroupMembershipService groupMembershipService) {
+      GroupMembershipService groupMembershipService,
+      PersonService personService,
+      MessagingService messagingService) {
     this.groupService = groupService;
     this.groupInviteService = groupInviteService;
     this.groupMembershipService = groupMembershipService;
+    this.personService = personService;
+    this.messagingService = messagingService;
   }
 
   @Override
@@ -52,6 +67,11 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
     GroupInviteStatuses status = groupInviteService.acceptInvite(groupId, memberId, statusId);
     if (status.equals(GroupInviteStatuses.ACCEPTED)) {
       groupMembershipService.addMember(groupId, memberId);
+      Group group = groupService.getGroup(groupId);
+      Person member = personService.getPerson(memberId);
+      NewGroupMembershipContext context =
+          NewGroupMembershipContext.builder().group(group).member(member).build();
+      messagingService.sendGroupMemberWelcomeNotification(context);
     }
   }
 
