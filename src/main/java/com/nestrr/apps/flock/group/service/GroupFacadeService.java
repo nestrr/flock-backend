@@ -18,4 +18,6 @@ public interface GroupFacadeService {
   void deleteGroup(String groupId);
 
   void inviteUsers(Authentication auth, String groupId, List<String> memberIds);
+
+  void respondToInvite(Authentication auth, String groupId, String memberId, String statusId);
 }

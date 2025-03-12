@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.samePropertyValuesAs;
 
 import com.nestrr.apps.flock.profile.dto.OidcProfileRequest;
 import com.nestrr.apps.flock.profile.dto.ProfileDto;
+import com.nestrr.apps.flock.shared.Authenticated;
 import com.nestrr.apps.flock.shared.AuthenticatedTest;
 import com.nestrr.apps.flock.shared.Authenticator;
 import io.restassured.http.ContentType;
@@ -31,8 +32,7 @@ class ProfileControllerTest extends AuthenticatedTest {
   void canGetProfile() {
     OidcProfileRequest oidcProfileRequest =
         OidcProfileRequest.builder().name("Test").email("test@gmail.com").image("image").build();
-    Authenticator.Authenticated dummyAuth =
-        getAuthenticator().of(oidcProfileRequest.getEmail(), "password");
+    Authenticated dummyAuth = getAuthenticator().of(oidcProfileRequest.getEmail(), "password");
 
     ProfileDto expectedProfileDto =
         ProfileDto.builder()

@@ -74,6 +74,25 @@ public class GroupInviteServiceImpl implements GroupInviteService {
     groupInviteRepository.deleteByIdGroupId(groupId);
   }
 
+  @Override
+  public GroupInviteStatuses acceptInvite(String groupId, String memberId, String statusId) {
+    GroupInvite existingInvite =
+        groupInviteRepository
+            .findById(new GroupInviteId(groupId, memberId))
+            .orElseThrow(
+                () ->
+                    new NoSuchElementException(
+                        String.format(
+                            "No invite found for group ID %s and member ID %s",
+                            groupId, memberId)));
+    if (existingInvite.getExpiresOn().isBefore(LocalDateTime.now()))
+      throw new IllegalArgumentException(
+          String.format("Invite for group ID %s and member ID %s has expired", groupId, memberId));
+    existingInvite.setStatusId(statusId);
+    groupInviteRepository.save(existingInvite);
+    return getStatus(statusId);
+  }
+
   private void storeInvite(String groupId, String recipientId, String statusId) {
     groupInviteRepository.save(
         GroupInvite.builder()
@@ -84,7 +103,6 @@ public class GroupInviteServiceImpl implements GroupInviteService {
   }
 
   private String getStatusId(GroupInviteStatuses status) {
-
     return groupInviteStatusRepository
         .findByName(status.value())
         .map(GroupInviteStatus::getId)
@@ -94,6 +112,18 @@ public class GroupInviteServiceImpl implements GroupInviteService {
                     String.format(
                         "No appropriate group invite status ID found for status: %s.",
                         status.value())));
+  }
+
+  private GroupInviteStatuses getStatus(String id) {
+    String name =
+        groupInviteStatusRepository
+            .findById(id)
+            .map(GroupInviteStatus::getName)
+            .orElseThrow(
+                () ->
+                    new NoSuchElementException(
+                        String.format("No status found for status ID: %s.", id)));
+    return GroupInviteStatuses.valueOf(name);
   }
 
   private void sendInvites(Group group, List<String> recipientIds) {

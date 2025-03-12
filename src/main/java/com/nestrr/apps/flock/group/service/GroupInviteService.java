@@ -12,4 +12,6 @@ public interface GroupInviteService {
   List<GroupInvite> getGroupInvites(String groupId, GroupInviteStatuses status);
 
   void deleteByGroupId(String groupId);
+
+  GroupInviteStatuses acceptInvite(String groupId, String memberId, String statusId);
 }
