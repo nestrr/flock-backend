@@ -7,9 +7,9 @@ oidc:
     url: https://login.microsoftonline.com/${MICROSOFT_ENTRA_TENANT_ID}/discovery/v2.0/keys
 spring:
   mail:
-    host: smtp-mail.outlook.com
+    host: smtppro.zoho.com
     port: 587
-    username: ${MAIL_USERNAME}
+    username: team@nestrr.io
     password: ${MAIL_PASSWORD}
     properties:
       mail:
@@ -26,6 +26,8 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maxLifetime: 60000
 otel:
   sdk:
     disabled: true
