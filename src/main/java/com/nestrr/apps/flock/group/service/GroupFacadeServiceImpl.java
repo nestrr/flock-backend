@@ -47,6 +47,7 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
     Group group = groupService.createGroup(creatorId, newGroupRequest);
     groupInviteService.createInvites(group, newGroupRequest.members());
     groupMembershipService.addMember(group.getId(), creatorId);
+    sendInvites(group, newGroupRequest.members());
   }
 
   @Override
@@ -141,7 +142,6 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
 
   private void sendInvites(Group group, List<String> recipientIds) throws NoSuchElementException {
     Person admin = personService.getPerson(group.getAdminId());
-
     GroupInviteContext context = GroupInviteContext.builder().group(group).admin(admin).build();
     messagingService.sendInviteNotification(context, recipientIds);
   }

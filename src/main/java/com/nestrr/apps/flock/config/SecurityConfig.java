@@ -18,6 +18,9 @@ public class SecurityConfig {
   @Value("${oidc.jwk.url}")
   private String keySetUri;
 
+  @Value("${frontend.url}")
+  private String frontendUrl;
+
   public SecurityConfig(JwtAuthenticationConverter converter) {
     this.converter = converter;
   }
@@ -32,7 +35,7 @@ public class SecurityConfig {
               CorsConfigurationSource source =
                   request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(List.of("localhost"));
+                    config.setAllowedOrigins(List.of(frontendUrl));
                     config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
                     config.setAllowedHeaders(List.of("*"));
                     return config;
