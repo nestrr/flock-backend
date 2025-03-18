@@ -7,17 +7,18 @@
 </head>
 
 <body>
-<h1>You have been removed from the <a href="${groupUrl}"
+<h1>You have been removed from the <a th:href="@{${groupUrl}}"
                                       target="_blank"><span
         style="font-weight:bold;"
         th:text="${groupName}"></span></a> group. 😔🕊️</h1>
 
-<p>This email is to confirm that you have been removed from the <a href="${groupUrl}"
+<p>This email is to confirm that you have been removed from the <a th:href="@{${groupUrl}}"
                                                                    target="_blank"><span
         style="font-weight:bold;"
         th:text="${groupName}"></span></a> by the admin.</p>
 <br/>
-<p>Want to make a group of your own? <a href="${mainUrl}" target="_blank">Visit us</a> to make a new group anytime.</p>
+<p>Want to make a group of your own? <a th:href="@{${mainUrl}}" target="_blank">Visit us</a> to make a new group
+    anytime.</p>
 
 <br/>
 <p>Till next time,</p>

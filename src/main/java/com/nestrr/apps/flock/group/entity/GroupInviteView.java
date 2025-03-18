@@ -1,5 +1,6 @@
 package com.nestrr.apps.flock.group.entity;
 
+import com.nestrr.apps.flock.group.entity.id.GroupInviteId;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,15 +12,11 @@ import org.springframework.data.annotation.Immutable;
 @Immutable
 @NoArgsConstructor
 @AllArgsConstructor
-public final class GroupView {
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
-  private String id;
+public final class GroupInviteView {
 
+  @EmbeddedId private GroupInviteId id;
   private String name;
-  private String description;
+  private String email;
   private String image;
-  private String adminId;
-  private String statusId;
-  private String statusName;
+  private String status;
 }

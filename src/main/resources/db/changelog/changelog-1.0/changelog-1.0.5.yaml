@@ -54,3 +54,39 @@ databaseChangeLog:
                   type: boolean
                   constraints:
                     nullable: false
+  - changeSet:
+      # Create the group_membership_view, which provides person-to-group mappings
+      id: 202503121403
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createView:
+            replaceIfExists: true
+            viewName: group_membership_view
+            selectQuery: |
+              SELECT p.id AS person_id,
+                      p.name, 
+                     p.email,
+                     p.image,
+                     gm.group_id
+              FROM group_membership gm
+              JOIN person p ON gm.person_id=p.id
+  - changeSet:
+      # Create the group_invite view, which maps group invites to person and invite status
+      id: 202503121416
+      author: maryamkhan
+      runOnChange: true
+      changes:
+        - createView:
+            replaceIfExists: true
+            viewName: group_invite_view
+            selectQuery: |
+              SELECT p.id AS person_id,
+                     gi.group_id,
+                     p.name, 
+                     p.email,
+                     p.image,
+                     gis.name AS status              
+              FROM group_invite gi
+              JOIN person p ON gi.person_id=p.id
+              JOIN group_invite_status gis ON gi.status_id=gis.id

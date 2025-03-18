@@ -98,6 +98,7 @@ public class MessagingServiceImpl implements MessagingService {
     Context ctx = new Context(Locale.US);
     ctx.setVariable("pageTitle", subject);
     ctx.setVariable("groupName", context.group().getName());
+    ctx.setVariable("groupDescription", context.group().getDescription());
     ctx.setVariable("groupId", context.group().getId());
     ctx.setVariable("adminId", context.admin().getId());
     ctx.setVariable("adminName", context.admin().getName());

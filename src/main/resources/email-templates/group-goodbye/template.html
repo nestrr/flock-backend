@@ -9,12 +9,13 @@
 <body>
 <h1>We're sad to see you go 😔🕊️</h1>
 
-<p>This email is to confirm that you have left the <a href="${groupUrl}"
+<p>This email is to confirm that you have left the <a th:href="@{${groupUrl}}"
                                                       target="_blank"><span
         style="font-weight:bold;"
         th:text="${groupName}"></span></a>. We're sure you will be missed dearly.</p>
 <br/>
-<p>Want to make a group of your own? <a href="${mainUrl}" target="_blank">Visit us</a> to make a new group anytime.</p>
+<p>Want to make a group of your own? <a th:href="@{${mainUrl}}" target="_blank">Visit us</a> to make a new group
+    anytime.</p>
 
 <br/>
 <p>Till next time,</p>

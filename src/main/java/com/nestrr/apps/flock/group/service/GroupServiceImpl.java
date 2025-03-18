@@ -64,7 +64,7 @@ public class GroupServiceImpl implements GroupService {
             .adminId(updateGroupRequest.adminId())
             .build();
     Group group = groupRepository.findById(groupId).orElseThrow();
-    copyNonNullProperties(group, groupFromUpdate);
+    copyNonNullProperties(groupFromUpdate, group);
     return groupRepository.save(group);
   }
 

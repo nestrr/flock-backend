@@ -9,14 +9,14 @@
 <body>
 <h1>Hey again! 👋🐦</h1>
 
-<p>You're now admin of <a href="${groupUrl}" target="_blank"><span style="font-weight:bold;"
-                                                                   th:text="${groupName}"></span></a>.
+<p>You're now admin of <a th:href="@{${groupUrl}}" target="_blank"><span style="font-weight:bold;"
+                                                                         th:text="${groupName}"></span></a>.
 </p>
 <p>
     <span style="font-weight:bold;" th:text="${oldAdminName}"></span> has handed the reins to you, and you know how it
     goes: with great power comes great responsibility!</p>
 <p>As a reminder, here's what the group's all about.</p>
-<span style="font-weight:italic;" th:text="${groupDescription}"></span>
+<span style="font-style:italic;" th:text="${groupDescription}"></span>
 
 <br/>
 <p>Cheers,</p>
