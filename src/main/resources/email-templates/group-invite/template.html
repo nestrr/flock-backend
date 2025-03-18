@@ -14,9 +14,10 @@
 <p>
     Here's a little more about the group:
 </p>
-<span style="font-weight:italic;" th:text="${groupDescription}"></span>
+<span style="font-style:italic;" th:text="${groupDescription}"></span>
 <br/>
-<p>What do you think? <a href="${inviteUrl}" target="_blank">Click here to accept or reject the invite.</a> <b>After a
+<p>What do you think? <a th:href="@{${inviteUrl}}" target="_blank">Click here to accept or reject the invite.</a> <b>After
+    a
     week, your
     invite will expire, so be sure to accept the invite before then if you're interested!</b></p>
 

@@ -9,11 +9,13 @@
 <body>
 <h1>Hey again! 👋🐦</h1>
 
-<p>The <a href="${groupUrl}" target="_blank"><span style="font-weight:bold;"
-                                                   th:text="${groupName}"></span></a> group has shut down. This may come
+<p>The <a th:href="@{${groupUrl}}" target="_blank"><span style="font-weight:bold;"
+                                                         th:text="${groupName}"></span></a> group has shut down. This
+    may
+    come
     as a shock, but rest assured that there will be many more opportunities to connect down the line.</p>
 <br/>
-<p>Flock is here for you! <a href="${mainUrl}" target="_blank">Visit us</a> to make a new group anytime.</p>
+<p>Flock is here for you! <a th:href="@{${mainUrl}}" target="_blank">Visit us</a> to make a new group anytime.</p>
 
 <br/>
 <p>Till next time,</p>

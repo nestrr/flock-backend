@@ -27,7 +27,10 @@ spring:
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
-      maxLifetime: 60000
+      maxLifetime: 30000
+      connectionTimeout: 300000
+      idleTimeout: 300000
+      leakDetectionThreshold: 300000
 otel:
   sdk:
     disabled: true

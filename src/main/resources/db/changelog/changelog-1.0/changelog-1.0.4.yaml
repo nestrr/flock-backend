@@ -294,7 +294,7 @@ databaseChangeLog:
             onDelete: CASCADE
             onUpdate: CASCADE
   - changeSet:
-      # Create the profile view
+      # Create the group_view view
       id: 202503091626
       author: maryamkhan
       runOnChange: true
@@ -308,6 +308,7 @@ databaseChangeLog:
                       g.description, 
                       g.image, 
                       g.admin_id, 
-                      jsonb_build_object('id', gs.id, 'name', gs.name) AS status
+                      gs.id AS status_id,
+                      gs.name AS status_name
               FROM "group" g
               JOIN group_status gs ON g.status_id = gs.id;

@@ -3,9 +3,7 @@ package com.nestrr.apps.flock.group.service;
 import static com.nestrr.apps.flock.util.AuthenticationUtil.getJwtId;
 
 import com.nestrr.apps.flock.group.constants.GroupInviteStatuses;
-import com.nestrr.apps.flock.group.dto.GroupDto;
-import com.nestrr.apps.flock.group.dto.NewGroupRequest;
-import com.nestrr.apps.flock.group.dto.UpdateGroupRequest;
+import com.nestrr.apps.flock.group.dto.*;
 import com.nestrr.apps.flock.group.entity.Group;
 import com.nestrr.apps.flock.group.entity.GroupInvite;
 import com.nestrr.apps.flock.group.entity.GroupMembership;
@@ -59,6 +57,26 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
     sendInvites(group, memberIds);
   }
 
+  @Override
+  @Transactional
+  public void deleteInvite(Authentication auth, String groupId, String memberId) {
+    groupInviteService.deleteByGroupAndPersonId(groupId, memberId);
+  }
+
+  @Override
+  @Transactional
+  public List<GroupInviteDto> getInvites(
+      Authentication auth, String groupId, Optional<String> status) {
+    if (status.isPresent()) return groupInviteService.getGroupInviteViews(groupId, status.get());
+    return groupInviteService.getGroupInviteViews(groupId);
+  }
+
+  @Transactional
+  @Override
+  public List<GroupMembershipDto> getMembers(String groupId) {
+    return groupMembershipService.getMembershipViewsByGroupId(groupId);
+  }
+
   @Transactional
   @Override
   public void removeMember(Authentication auth, String groupId, String memberId) {
@@ -100,6 +118,15 @@ public class GroupFacadeServiceImpl implements GroupFacadeService {
   public List<GroupDto> getSelfGroups(Authentication auth) {
     String personId = getJwtId(auth);
     return groupMembershipService.getGroupsByPersonId(personId);
+  }
+
+  @Transactional
+  @Override
+  public List<GroupDto> getSelfGroups(Authentication auth, Optional<String> statusName) {
+    String personId = getJwtId(auth);
+    return statusName.isPresent()
+        ? groupMembershipService.getGroupsByPersonAndStatusName(personId, statusName.get())
+        : groupMembershipService.getGroupsByPersonId(personId);
   }
 
   @Override

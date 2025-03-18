@@ -6,6 +6,7 @@ import com.nestrr.apps.flock.group.dto.UpdateGroupRequest;
 import com.nestrr.apps.flock.group.service.GroupFacadeService;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -22,9 +23,9 @@ public class GroupController {
   }
 
   @GetMapping("/me")
-  public ResponseEntity<List<GroupDto>> getSelfGroups(Authentication auth) {
-    var x = ResponseEntity.ok(groupFacadeService.getSelfGroups(auth));
-    return x;
+  public ResponseEntity<List<GroupDto>> getSelfGroups(
+      Authentication auth, @RequestParam(required = false) String status) {
+    return ResponseEntity.ok(groupFacadeService.getSelfGroups(auth, Optional.ofNullable(status)));
   }
 
   @PostMapping
@@ -35,7 +36,7 @@ public class GroupController {
   }
 
   @PatchMapping("/{groupId}")
-  @PreAuthorize("@groupFacadeServiceImpl.isGroupOwner(#groupId, authentication.name)")
+  @PreAuthorize("@groupServiceImpl.isGroupAdmin(#groupId, authentication.name)")
   public ResponseEntity<String> updateGroup(
       @PathVariable String groupId, @Valid @RequestBody UpdateGroupRequest updateGroupRequest) {
     groupFacadeService.updateGroup(groupId, updateGroupRequest);
@@ -51,7 +52,7 @@ public class GroupController {
 
   @DeleteMapping("/{groupId}/{memberId}")
   @PreAuthorize(
-      "#memberId == authentication.name || @groupFacadeServiceImpl.isGroupOwner(#groupId, authentication.name)")
+      "#memberId == authentication.name || @groupServiceImpl.isGroupAdmin(#groupId, authentication.name)")
   public ResponseEntity<String> removeMember(
       Authentication auth, @PathVariable String groupId, @PathVariable String memberId) {
     try {

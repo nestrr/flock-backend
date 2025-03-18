@@ -9,8 +9,9 @@
 <body>
 <h1>Hey again! 👋🐦</h1>
 
-<p>You're no longer an admin of <a href="${groupUrl}" target="_blank"><span style="font-weight:bold;"
-                                                                            th:text="${groupName}"></span></a>. That
+<p>You're no longer an admin of <a th:href="@{${groupUrl}}" target="_blank"><span style="font-weight:bold;"
+                                                                                  th:text="${groupName}"></span></a>.
+    That
     responsibility now
     rests with
     <span style="font-weight:bold;" th:text="${newAdminName}"></span>.</p>
